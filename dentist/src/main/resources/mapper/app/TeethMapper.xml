@@ -1,0 +1,872 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="co.smartooth.app.mapper.TeethMapper">
+
+
+
+
+
+    <!--피측정자 치아 상태 값 등록-->
+    <insert id="insertUserTeethInfo" parameterType="co.smartooth.app.vo.TeethInfoVO">
+    	
+    	INSERT INTO ST_TEETH_INFO
+			(
+				USER_NO
+				,USER_ID
+				,TEETH_STATUS
+				,RECORD_DT
+			)
+		VALUES
+			(
+				#{userNo}
+				,#{userId}
+				,#{teethStatus}
+				,SYSDATE()
+			)
+			
+    </insert>
+	
+
+	
+
+
+	<!-- 피측정자 치아 측정 값 등록 -->
+    <insert id="insertUserTeethMeasureValue" parameterType="co.smartooth.app.vo.TeethMeasureVO">
+    	
+    	INSERT INTO ST_TEETH_MEASURE
+    	(
+    		USER_NO
+    		,USER_ID
+    		,T01 ,T02 ,T03 ,T04 ,T05 ,T06 ,T07 ,T08 ,T09 ,T10
+    		,T11 ,T12 ,T13 ,T14 ,T15 ,T16 ,T17 ,T18 ,T19 ,T20
+    		,T21 ,T22 ,T23 ,T24 ,T25 ,T26 ,T27 ,T28 ,T29 ,T30
+    		,T31 ,T32 ,T33 ,T34 ,T35 ,T36 ,T37 ,T38 ,T39 ,T40
+    		,T41 ,T42 ,T43 ,T44 ,T45 ,T46 ,T47 ,T48 ,T49 ,T50
+    		,T51 ,T52 ,T53 ,T54 ,T55 ,T56
+   		<if test=" measurerId != null and measurerId != '' ">
+			,MEASURER_ID
+		</if>
+		<if test=" cavityNormal != null and cavityNormal != '' ">
+			,CAVITY_NORMAL
+		</if>
+		<if test=" cavityCaution != null and cavityCaution != '' ">
+			,CAVITY_CAUTION
+		</if>
+		<if test=" cavityDanger != null and cavityDanger != '' ">
+			,CAVITY_DANGER
+		</if>
+    		,MEASURE_DT
+    		,DIAG_CD
+    	)
+    	VALUES
+    	(
+    		#{userNo}
+    		,#{userId}
+    		,#{t01} ,#{t02} ,#{t03} ,#{t04} ,#{t05} ,#{t06} ,#{t07} ,#{t08} ,#{t09} ,#{t10}
+    		,#{t11} ,#{t12} ,#{t13} ,#{t14} ,#{t15} ,#{t16} ,#{t17} ,#{t18} ,#{t19} ,#{t20}
+    		,#{t21} ,#{t22} ,#{t23} ,#{t24} ,#{t25} ,#{t26} ,#{t27} ,#{t28} ,#{t29} ,#{t30}
+    		,#{t31} ,#{t32} ,#{t33} ,#{t34} ,#{t35} ,#{t36} ,#{t37} ,#{t38} ,#{t39} ,#{t40}
+    		,#{t41} ,#{t42} ,#{t43} ,#{t44} ,#{t45} ,#{t46} ,#{t47} ,#{t48} ,#{t49} ,#{t50}
+    		,#{t51} ,#{t52} ,#{t53} ,#{t54} ,#{t55} ,#{t56}
+   		<if test=" measurerId != null and measurerId != '' ">
+			,#{measurerId}
+		</if>
+		<if test=" cavityNormal != null and cavityNormal != '' ">
+			,#{cavityNormal}
+		</if>
+		<if test=" cavityCaution != null and cavityCaution != '' ">
+			,#{cavityCaution}
+		</if>
+		<if test=" cavityDanger != null and cavityDanger != '' ">
+			,#{cavityDanger}
+		</if>
+    		,SYSDATE()
+    		,#{diagCd}
+   		)
+   		
+    </insert>
+
+
+
+
+
+    <!-- 피측정자 개별 치아 측정 값 업데이트 -->
+    <update id="updateUserToothMeasureValue" parameterType="co.smartooth.app.vo.ToothMeasureVO">
+		
+		UPDATE ST_TEETH_MEASURE
+		<trim prefix="SET" suffixOverrides=",">
+			${toothNo}  =  #{toothValue},
+			<if test="measurerId != null and measurerId != '' ">
+				MEASURER_ID = #{measurerId},
+			</if>
+			<if test="schoolCode != null and schoolCode != '' ">
+				ORGAN_CODE = #{schoolCode},
+			</if>
+   		</trim>
+		WHERE 1=1
+		AND USER_ID = #{userId}
+		AND DATE_FORMAT(MEASURE_DT, '%Y-%m-%d') = #{measureDt}
+   		
+    </update>
+    
+    
+    
+    
+    
+    <!-- 피측정자 충치 개수 업데이트 (측정일별) -->
+    <update id="updateUserCavityCntByMeasureDt" parameterType="co.smartooth.app.vo.ToothMeasureVO">
+
+		UPDATE ST_TEETH_MEASURE
+		<trim prefix="SET" suffixOverrides=",">
+		CAVITY_NORMAL  =  #{cavityNormal},
+			CAVITY_CAUTION  =  #{cavityCaution},
+			CAVITY_DANGER  =  #{cavityDanger},
+			PERM_CAVITY_NORMAL = #{permCavityNormal},
+			PERM_CAVITY_CAUTION = #{permCavityCaution},
+			PERM_CAVITY_DANGER = #{permCavityDanger},
+   		</trim>
+		WHERE 1=1
+		AND USER_ID = #{userId}
+		<if test="diagCd != null and diagCd != '' ">
+		AND DIAG_CD = #{diagCd}
+   		</if>	
+		AND DATE_FORMAT(MEASURE_DT, '%Y-%m-%d') = #{measureDt}
+
+    </update>
+    
+    
+    
+    
+    
+   	<!-- 피측정자의 SYSDATE(오늘)의 측정 값이 있는지 여부 확인 (0 : 오늘X, 1: 오늘) -->
+	<select id="isExistSysDateRow" parameterType="String" resultType="Integer">
+		
+		SELECT COUNT(*)
+		FROM ST_TEETH_MEASURE
+	 	WHERE 1=1
+		AND USER_ID = #{userId}
+		AND DATE_FORMAT(MEASURE_DT, '%Y-%m-%d') = DATE_FORMAT(SYSDATE(), '%Y-%m-%d') 
+			
+   	</select>
+   	
+   	
+   	
+   	
+   	
+	<!-- 피측정자의 기존 치아 측정 값 있는지 여부 반환(0 : 없음 / 1이상: 있음) -->
+	<select id="isExistOldRow" parameterType="String" resultType="Integer">
+		
+		SELECT COUNT(*)
+		FROM ST_TEETH_MEASURE
+	 	WHERE 1=1
+		AND USER_ID = #{userId}
+			
+   	</select>
+	
+	
+	
+	
+
+   	<!-- 피측정자 치아 개별 측정 값 조회 (기간) -->
+    <select id="selectUserToothMeasureValue" parameterType="co.smartooth.app.vo.ToothMeasureVO" resultType="co.smartooth.app.vo.ToothMeasureVO">
+		
+		SELECT 
+			USER_ID
+			,USER_NO
+			,${toothNo}
+			,DATE_FORMAT(MEASURE_DT, '%Y-%m-%d') AS MEASURE_DT
+		FROM ST_TEETH_MEASURE
+		WHERE 1=1 
+		AND USER_ID = #{userId}
+		AND DATE_FORMAT(MEASURE_DT, '%Y-%m-%d') BETWEEN #{startDt} AND #{endDt}
+		ORDER BY MEASURE_DT DESC
+   
+    </select >
+
+
+
+
+
+    <!-- 충치 단계별 수치 조회 -->
+	<select id="selectCavityLevel" resultType="hashmap">
+
+		SELECT CAVITY_NORMAL
+				   ,CAVITY_CAUTION
+				   ,CAVITY_DANGER
+				   ,DATE_FORMAT(CAVITY_SET_DT, '%Y-%m-%d') AS CAVITY_SET_DT
+		FROM ST_CAVITY_LEVEL
+		
+	</select>
+    
+    
+	
+	
+	
+	<!-- 피측정자 진단 정보 조회 (측정일) -->
+	<select id="selectDiagCd" parameterType="String" resultType="co.smartooth.app.vo.TeethMeasureVO">
+
+		SELECT USER_ID
+				   ,DIAG_CD
+				   ,DATE_FORMAT(MEASURE_DT, '%Y-%m-%d') AS MEASURE_DT
+		FROM ST_TEETH_MEASURE
+		WHERE 1=1
+		AND USER_ID = #{userId}
+		AND DATE_FORMAT(MEASURE_DT, '%Y-%m-%d') = #{measureDt}
+		
+	</select>
+	
+	
+
+
+
+	<!-- 피측정자 진단 정보 업데이트 -->
+    <update id="updateDiagCd" parameterType="String">
+
+		UPDATE ST_TEETH_MEASURE
+		SET DIAG_CD  =  #{diagCd}
+		WHERE 1=1
+		AND USER_ID = #{userId}
+		AND DATE_FORMAT(MEASURE_DT, '%Y-%m-%d') = #{measureDt}
+		
+    </update>
+
+
+
+
+
+	<!-- 피측정자 비고(메모) 정보 조회 (측정일) -->
+	<select id="selectMemo" parameterType="String" resultType="co.smartooth.app.vo.TeethMeasureVO">
+
+		SELECT USER_ID
+				   ,MEMO
+				   ,DATE_FORMAT(MEASURE_DT, '%Y-%m-%d') AS MEASURE_DT
+		FROM ST_TEETH_MEASURE
+		WHERE 1=1
+		AND USER_ID = #{userId}
+		AND DATE_FORMAT(MEASURE_DT, '%Y-%m-%d') = #{measureDt}
+		
+	</select>
+
+
+
+
+	<!-- 피측정자 메모(비고) 정보 업데이트  -->
+    <update id="updateMemo" parameterType="String">
+
+		UPDATE ST_TEETH_MEASURE
+		SET MEMO  =  #{memo}
+		WHERE 1=1
+		AND USER_ID = #{userId}
+		AND DATE_FORMAT(MEASURE_DT, '%Y-%m-%d') = #{measureDt}
+		
+    </update>
+    
+    
+    
+    
+    <!-- 피측정자 정보 업데이트 -->
+    <select id="selectTeethStatus" parameterType="String" resultType="String">
+
+		SELECT TEETH_STATUS 
+		FROM ST_TEETH_INFO
+		WHERE 1=1 
+		AND USER_ID = #{userId}
+		ORDER BY RECORD_DT DESC
+		LIMIT 1
+		
+    </select>
+	
+	
+	
+	
+	
+
+    
+
+
+	<!-- 피측정자 치아 측정 값 조회 (기간) --> 
+    <select id="selectUserTeethMeasureValue" parameterType="co.smartooth.app.vo.TeethMeasureVO" resultType="co.smartooth.app.vo.TeethMeasureVO">
+		
+		SELECT 
+			STM.USER_NO				AS USER_NO
+			,STM.USER_ID				AS USER_ID
+			,STM.T01						AS  T01
+			,STM.T02						AS  T02
+			,STM.T03						AS  T03
+			,STM.T04						AS  T04
+			,STM.T05						AS  T05
+			,STM.T06						AS  T06
+			,STM.T07						AS  T07
+			,STM.T08						AS  T08
+			,STM.T09						AS  T09
+			,STM.T10						AS  T10
+			,STM.T11						AS  T11
+			,STM.T12						AS  T12
+			,STM.T13						AS  T13
+			,STM.T14						AS  T14
+			,STM.T15						AS  T15
+			,STM.T16						AS  T16
+			,STM.T17						AS  T17
+			,STM.T18						AS  T18
+			,STM.T19						AS  T19
+			,STM.T20						AS  T20
+			,STM.T21						AS  T21
+			,STM.T22						AS  T22
+			,STM.T23						AS  T23
+			,STM.T24						AS  T24
+			,STM.T25						AS  T25
+			,STM.T26						AS  T26
+			,STM.T27						AS  T27
+			,STM.T28						AS  T28
+			,STM.T29						AS  T29
+			,STM.T30						AS  T30
+			,STM.T31						AS  T31
+			,STM.T32						AS  T32
+			,STM.T33						AS  T33
+			,STM.T34						AS  T34
+			,STM.T35						AS  T35
+			,STM.T36						AS  T36
+			,STM.T37						AS  T37
+			,STM.T38						AS  T38
+			,STM.T39						AS  T39
+			,STM.T40						AS  T40
+			,STM.T41						AS  T41
+			,STM.T42						AS  T42
+			,STM.T43						AS  T43
+			,STM.T44						AS  T44
+			,STM.T45						AS  T45
+			,STM.T46						AS  T46
+			,STM.T47						AS  T47
+			,STM.T48						AS  T48
+			,STM.T49						AS  T49
+			,STM.T50						AS  T50
+			,STM.T51						AS  T51
+			,STM.T52						AS  T52
+			,STM.T53						AS  T53
+			,STM.T54						AS  T54
+			,STM.T55						AS  T55
+			,STM.T56						AS  T56
+			,DATE_FORMAT(MEASURE_DT, '%Y-%m-%d') AS MEASURE_DT
+			,DIAG_CD
+			,MEMO
+			,STM.ORGAN_CODE																							AS SCHOOL_CODE
+			,SDHI.DENTAL_HOSPITAL_NM																			AS SCHOOL_NAME
+			,STM.MEASURER_ID																							AS MEASURER_ID
+			,SDI.DENTIST_NM																								AS MEASURER_NM
+		FROM ST_TEETH_MEASURE STM
+		LEFT OUTER JOIN ST_DENTAL_HOSPITAL_INFO SDHI
+		ON STM.ORGAN_CODE = SDHI.DENTAL_HOSPITAL_CD
+		LEFT OUTER JOIN ST_DENTIST_INFO SDI
+		ON STM.MEASURER_ID = SDI.DENTIST_ID
+		WHERE 1=1 
+		AND USER_ID = #{userId}
+		AND DATE_FORMAT(MEASURE_DT, '%Y-%m-%d') BETWEEN #{startDt} AND #{endDt}
+		ORDER BY MEASURE_DT DESC
+		
+    </select >
+	
+	
+	
+	
+	
+	<!-- T00~T99의 측정 기록을 일반 회원의 측정 기록으로 전환-->
+	<update id="updateMeasureValueUserId" parameterType="String">
+	
+		UPDATE ST_TEETH_MEASURE
+		SET USER_ID = #{userId}
+		WHERE 1=1
+		AND USER_ID = #{testUserId}
+  		
+	</update>
+
+
+
+
+
+	<!-- T00~T99의 측정 기록 삭제 -->
+	<update id="deleteMeasureValueUserId" parameterType="String">
+	
+		DELETE FROM ST_TEETH_MEASURE
+		WHERE 1=1
+		AND USER_ID = #{userId}
+		AND DATE_FORMAT(MEASURE_DT, '%Y-%m-%d') = #{measureDt}
+  		
+	</update>
+	
+	
+	
+	
+	
+	<!-- 빠른 전환 고객 첫 측정 날짜 조회 -->
+	<select id="selectUserTeethMeasureDt" parameterType="String" resultType="String">
+		
+		SELECT
+			MEASURE_DT
+		FROM ST_TEETH_MEASURE
+		WHERE 1=1
+		AND USER_ID = #{userId}
+		ORDER BY MEASURE_DT ASC
+		LIMIT 1
+		
+	</select>
+	
+	
+	
+	
+	
+	<!-- 측정 기록에 측정자 아이디 업데이트 -->
+	<update id="updateMeasurerId" parameterType="String">
+	
+		UPDATE ST_TEETH_MEASURE
+		SET MEASURER_ID = #{measurerId}
+		WHERE 1=1
+		AND USER_ID = #{userId}
+		AND DATE_FORMAT(MEASURE_DT, '%Y-%m-%d') = #{measureDt} 
+  		
+	</update>
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+<!-- 	    피측정자의 치아 상태 값 조회  -->
+<!--     <select id="selectUserTeethInfo" parameterType="co.smartooth.app.vo.UserVO" resultType="co.smartooth.app.vo.TeethInfoVO"> -->
+<!-- 		SELECT  -->
+<!-- 			USER_NO -->
+<!-- 			,USER_ID -->
+<!-- 			,TEETH_STATUS -->
+<!-- 			,DATE_FORMAT(RECORD_DT, '%Y-%m-%d') AS RECORD_DT -->
+<!-- 		 FROM ST_TEETH_INFO -->
+<!-- 		WHERE 1=1  -->
+<!-- 		AND USER_ID = #{userId} -->
+<!-- 	<if test=" userNo != null and userNo != '' "> -->
+<!-- 		AND USER_NO = #{userNo} -->
+<!-- 	</if> -->
+<!--     </select > -->
+
+
+
+
+    
+<!--     피측정자 측정 값 INSERT :::: Map형태로 받을 경우 VO의 변수이름이 아닌 파라미터의 네이밍 대로 파라미터를 대입한다 -->
+<!--     <insert id="insertUserTeethMeasureValue" parameterType="co.smartooth.app.vo.TeethMeasureVO"> -->
+    	
+<!--     	INSERT INTO ST_TEETH_MEASURE -->
+<!--     	( -->
+<!--     		USER_NO -->
+<!--     		,USER_ID -->
+<!--     		,T01 -->
+<!--     		,T02 -->
+<!--     		,T03 -->
+<!--     		,T04 -->
+<!--     		,T05 -->
+<!--     		,T06 -->
+<!--     		,T07 -->
+<!--     		,T08 -->
+<!--     		,T09 -->
+<!--     		,T10 -->
+<!--     		,T11 -->
+<!--     		,T12 -->
+<!--     		,T13 -->
+<!--     		,T14 -->
+<!--     		,T15 -->
+<!--     		,T16 -->
+<!--     		,T17 -->
+<!--     		,T18 -->
+<!--     		,T19 -->
+<!--     		,T20 -->
+<!--     		,T21 -->
+<!--     		,T22 -->
+<!--     		,T23 -->
+<!--     		,T24 -->
+<!--     		,T25 -->
+<!--     		,T26 -->
+<!--     		,T27 -->
+<!--     		,T28 -->
+<!--     		,T29 -->
+<!--     		,T30 -->
+<!--     		,T31 -->
+<!--     		,T32 -->
+<!-- 		<if test=" cavityNormal != null and cavityNormal != '' "> -->
+<!-- 			,CAVITY_NORMAL -->
+<!-- 		</if> -->
+<!-- 		<if test=" cavityCaution != null and cavityCaution != '' "> -->
+<!-- 			,CAVITY_CAUTION -->
+<!-- 		</if> -->
+<!-- 		<if test=" cavityDanger != null and cavityDanger != '' "> -->
+<!-- 			,CAVITY_DANGER -->
+<!-- 		</if> -->
+<!--     		,MEASURE_DT -->
+<!--     		,DIAG_CD -->
+<!--     	) -->
+<!--     	VALUES -->
+<!--     	( -->
+<!--     		#{userNo} -->
+<!--     		,#{userId} -->
+<!--     		,#{t01} -->
+<!--     		,#{t02} -->
+<!--     		,#{t03} -->
+<!--     		,#{t04} -->
+<!--     		,#{t05} -->
+<!--     		,#{t06} -->
+<!--     		,#{t07} -->
+<!--     		,#{t08} -->
+<!--     		,#{t09} -->
+<!--     		,#{t10} -->
+<!--     		,#{t11} -->
+<!--     		,#{t12} -->
+<!--     		,#{t13} -->
+<!--     		,#{t14} -->
+<!--     		,#{t15} -->
+<!--     		,#{t16} -->
+<!--     		,#{t17} -->
+<!--     		,#{t18} -->
+<!--     		,#{t19} -->
+<!--     		,#{t20} -->
+<!--     		,#{t21} -->
+<!--     		,#{t22} -->
+<!--     		,#{t23} -->
+<!--     		,#{t24} -->
+<!--     		,#{t25} -->
+<!--     		,#{t26} -->
+<!--     		,#{t27} -->
+<!--     		,#{t28} -->
+<!--     		,#{t29} -->
+<!--     		,#{t30} -->
+<!--     		,#{t31} -->
+<!--     		,#{t32} -->
+<!--    		<if test=" measurerId != null and measurerId != '' "> -->
+<!-- 			,#{measurerId} -->
+<!-- 		</if> -->
+<!-- 		<if test=" cavityNormal != null and cavityNormal != '' "> -->
+<!-- 			,#{cavityNormal} -->
+<!-- 		</if> -->
+<!-- 		<if test=" cavityCaution != null and cavityCaution != '' "> -->
+<!-- 			,#{cavityCaution} -->
+<!-- 		</if> -->
+<!-- 		<if test=" cavityDanger != null and cavityDanger != '' "> -->
+<!-- 			,#{cavityDanger} -->
+<!-- 		</if> -->
+<!--     		,SYSDATE() -->
+<!--     		,#{diagCd} -->
+<!--    		) -->
+<!--     </insert> -->
+
+
+
+
+
+<!--  	피측정자 치아 측정 값 INSERT -->
+<!--     <update id="updateUserTeethMeasureValue" parameterType="co.smartooth.app.vo.TeethMeasureVO"> -->
+<!-- 		UPDATE ST_TEETH_MEASURE -->
+<!-- 		SET  T01  =  #{t01} -->
+<!-- 			   ,T02 =   #{t02} -->
+<!-- 			   ,T03 =   #{t03} -->
+<!-- 			   ,T04 =   #{t04} -->
+<!-- 			   ,T05 =   #{t05} -->
+<!-- 			   ,T06 =   #{t06} -->
+<!-- 			   ,T07 =   #{t07} -->
+<!-- 			   ,T08 =   #{t08} -->
+<!-- 			   ,T09 =   #{t09} -->
+<!-- 			   ,T10 =   #{t10} -->
+<!-- 			   ,T11 =   #{t11} -->
+<!--             ,T12 =   #{t12} -->
+<!--             ,T13 =   #{t13} -->
+<!--             ,T14 =   #{t14} -->
+<!--             ,T15 =   #{t15} -->
+<!--             ,T16 =   #{t16} -->
+<!-- 			   ,T17 =   #{t17} -->
+<!-- 			   ,T18 =   #{t18} -->
+<!-- 			   ,T19 =   #{t19} -->
+<!-- 			   ,T20 =   #{t20} -->
+<!-- 			   ,T21 =   #{t21} -->
+<!-- 			   ,T22 =   #{t22} -->
+<!-- 			   ,T23 =   #{t23} -->
+<!-- 			   ,T24 =   #{t24} -->
+<!-- 			   ,T25 =   #{t25} -->
+<!-- 			   ,T26 =   #{t26} -->
+<!-- 			   ,T27 =   #{t27} -->
+<!-- 			   ,T28 =   #{t28} -->
+<!-- 			   ,T29 =   #{t29} -->
+<!-- 			   ,T30 =   #{t30} -->
+<!-- 			   ,T31 =   #{t31} -->
+<!-- 			   ,T32 =   #{t32} -->
+<!-- 			   ,T33 =   #{t33} -->
+<!-- 			   ,T34 =   #{t34} -->
+<!-- 			   ,T35 =   #{t35} -->
+<!-- 			   ,T36 =   #{t36} -->
+<!-- 			   ,T37 =   #{t37} -->
+<!-- 			   ,T38 =   #{t38} -->
+<!-- 			   ,T39 =   #{t39} -->
+<!-- 			   ,T40 =   #{t40} -->
+<!-- 			   ,T41 =   #{t41} -->
+<!-- 			   ,T42 =   #{t42} -->
+<!-- 			   ,T43 =   #{t43} -->
+<!-- 			   ,T44 =   #{t44} -->
+<!-- 			   ,T45 =   #{t45} -->
+<!-- 			   ,T46 =   #{t46} -->
+<!-- 			   ,T47 =   #{t47} -->
+<!-- 			   ,T48 =   #{t48} -->
+<!-- 			   ,T49 =   #{t49} -->
+<!-- 			   ,T50 =   #{t50} -->
+<!-- 			   ,T51 =   #{t51} -->
+<!-- 			   ,T52 =   #{t52} -->
+<!-- 			   ,T53 =   #{t53} -->
+<!-- 			   ,T54 =   #{t54} -->
+<!-- 			   ,T55 =   #{t55} -->
+<!-- 			<if test=" cavityNormal != null and cavityNormal != '' "> -->
+<!-- 				,CAVITY_NORMAL = #{cavityNormal} -->
+<!-- 			</if> -->
+<!-- 			<if test=" cavityCaution != null and cavityCaution != '' "> -->
+<!-- 				,CAVITY_CAUTION = #{cavityCaution} -->
+<!-- 			</if> -->
+<!-- 			<if test=" cavityDanger != null and cavityDanger != '' "> -->
+<!-- 				,CAVITY_DANGER = #{cavityDanger} -->
+<!-- 			</if> -->
+<!-- 			   ,MEASURE_DT = SYSDATE() -->
+<!-- 		WHERE 1=1 -->
+<!-- 		AND USER_ID = #{userId} -->
+<!-- 	<if test=" userNo != null and userNo != '' "> -->
+<!-- 		AND USER_NO = #{userNo} -->
+<!-- 	</if>  -->
+<!--     </update> -->
+
+
+
+
+
+<!-- 피측정자 치아 측정 값 INSERT :::: Map형태로 받을 경우 VO의 변수이름이 아닌 파라미터의 네이밍 대로 파라미터를 대입한다 -->
+<!--     <insert id="insertUserToothMeasureValue" parameterType="co.smartooth.app.vo.ToothMeasureVO"> -->
+<!--     	INSERT INTO ST_TEETH_MEASURE -->
+<!--     	( -->
+<!--     		USER_NO -->
+<!--     		,USER_ID -->
+<!--     		,${toothNo} -->
+<!--     		,MEASURE_DT -->
+<!--     	) -->
+<!--     	VALUES -->
+<!--     	( -->
+<!--     		#{userNo} -->
+<!--     		,#{userId} -->
+<!--     		,#{toothValue} -->
+<!--     		,SYSDATE() -->
+<!--    		) -->
+<!--     </insert> -->
+
+
+
+
+
+<!-- 피측정자 치아 측정 값 조회 (기간) --> 
+<!--     <select id="selectUserTeethMeasureValue" parameterType="co.smartooth.app.vo.TeethMeasureVO" resultType="co.smartooth.app.vo.TeethMeasureVO"> -->
+<!-- 		SELECT  -->
+<!-- 			USER_NO, USER_ID  -->
+<!-- 			,T01, T02, T03, T04, T05, T06, T07, T08, T09, T10, T11, T12, T13, T14, T15, T16 -->
+<!-- 			,T17, T18, T19, T20, T21, T22, T23, T24, T25, T26, T27, T28, T29, T30, T31, T32 -->
+<!-- 			,DATE_FORMAT(MEASURE_DT, '%Y-%m-%d') AS MEASURE_DT -->
+<!-- 			,DIAG_CD -->
+<!-- 			,MEMO -->
+<!-- 		 FROM ST_TEETH_MEASURE -->
+<!-- 		WHERE 1=1  -->
+<!-- 		AND USER_ID = #{userId} -->
+		<!-- AND DATE_FORMAT(MEASURE_DT, '%Y-%m-%d') = #{measureDt} -->
+<!-- 		AND DATE_FORMAT(MEASURE_DT, '%Y-%m-%d') BETWEEN #{startDt} AND #{endDt} -->
+<!-- 		ORDER BY MEASURE_DT DESC -->
+<!--     </select > -->
+
+
+
+
+
+<!-- 피측정자 치아 개별 측정 값 UPDATE 측정일마다 업데이트를 쳐줘라 -->
+<!-- 피측정자 충치 개수 UPDATE (최근) - ST_STUDENT_USER_DETAIL -->
+<!--     <update id="updateUserCavityCnt" parameterType="co.smartooth.app.vo.ToothMeasureVO"> -->
+<!-- 		UPDATE ST_STUDENT_USER_DETAIL -->
+<!-- 		SET CAVITY_NORMAL  =  #{cavityNormal}   -->
+<!-- 			  ,CAVITY_CAUTION  =  #{cavityCaution} -->
+<!-- 			  ,CAVITY_DANGER  =  #{cavityDanger} -->
+<!-- 		WHERE 1=1 -->
+<!-- 		AND USER_ID = #{userId} -->
+<!--     </update> -->
+
+
+
+
+
+<!-- 	피측정자 목록 치아 측정 상태 조회  -->
+<!-- 	<select id="selectUserMeasuringValue" parameterType="co.smartooth.app.vo.UserVO" resultType="co.smartooth.app.vo.UserVO"> -->
+<!--         SELECT USER_NO -->
+<!--                   ,USER_ID -->
+<!--                   ,USER_NAME -->
+<!--                   ,IS_MEASURING -->
+<!--          FROM ST_ST_USER -->
+<!--         WHERE 1=1  -->
+<!--            AND USER_ID = #{userId} -->
+<!--            AND USER_DELETE_YN = 'N'  -->
+<!--     </select > -->
+
+
+
+
+
+<!-- 	피측정자 목록 치아 측정 상태 조회  -->
+<!-- 	<select id="selectStUserIsMeasuring" parameterType="co.smartooth.app.vo.UserVO" resultType="co.smartooth.app.vo.UserVO"> -->
+<!-- 		SELECT SSUD.USER_NO				AS USER_NO -->
+<!-- 				   ,SSUD.USER_ID				AS USER_ID -->
+<!-- 				   ,SU.USER_NAME				AS USER_NAME -->
+<!-- 				   ,SSUD.IS_MEASURING	AS IS_MEASURING -->
+				   
+<!-- 		FROM ST_STUDENT_USER_DETAIL SSUD -->
+<!-- 		LEFT OUTER JOIN ST_USER SU -->
+<!-- 		ON SSUD.USER_ID = SU.USER_ID -->
+<!-- 		WHERE SSUD.USER_ID = #{userId} -->
+<!--     </select > -->
+
+
+
+
+
+<!--     학생 피측정자 측정 상태 업데이트 -->
+<!--     <update id="updateStUserIsMeasuring" parameterType="co.smartooth.app.vo.UserVO"> -->
+<!-- 		UPDATE ST_STUDENT_USER_DETAIL -->
+<!-- 		SET IS_MEASURING  =  #{isMeasuring} -->
+<!-- 		WHERE USER_ID = #{userId} -->
+<!--     </update> -->
+
+
+
+
+
+<!-- 	피측정자 측정 값 목록 조회 (최근 3개) -->
+<!-- 	<select id="selectUserMeasureValueList" parameterType="String" resultType="co.smartooth.app.vo.TeethMeasureVO"> -->
+<!-- 		SELECT     A.USER_ID -->
+<!-- 	           ,A.T04 -->
+<!-- 	           ,A.T05 -->
+<!-- 	           ,A.T06 -->
+<!-- 	           ,A.T07 -->
+<!-- 	           ,A.T08 -->
+<!-- 	           ,A.T09 -->
+<!-- 	           ,A.T10 -->
+<!-- 	           ,A.T11 -->
+<!-- 	           ,A.T12 -->
+<!-- 	           ,A.T13 -->
+<!-- 	           ,A.T20 -->
+<!-- 	           ,A.T21 -->
+<!-- 	           ,A.T22 -->
+<!-- 	           ,A.T23 -->
+<!-- 	           ,A.T24 -->
+<!-- 	           ,A.T25 -->
+<!-- 	           ,A.T26 -->
+<!-- 	           ,A.T27 -->
+<!-- 	           ,A.T28 -->
+<!-- 	           ,A.T29 -->
+<!-- 	           ,A.CAVITY_NORMAL  AS CAVITY_NORMAL -->
+<!-- 	           ,A.CAVITY_CAUTION AS CAVITY_CAUTION -->
+<!-- 	           ,A.CAVITY_DANGER  AS CAVITY_DANGER -->
+<!-- 	           ,A.DIAG_CD           AS DIAG_CD -->
+<!-- 	           ,DATE_FORMAT(A.MEASURE_DT, '%Y-%m-%d')   AS MEASURE_DT  -->
+<!-- 		FROM       ( -->
+<!--                     SELECT   USER_ID -->
+<!--                              ,T04   -->
+<!--                              ,T05   -->
+<!--                              ,T06   -->
+<!--                              ,T07   -->
+<!--                              ,T08   -->
+<!--                              ,T09   -->
+<!--                              ,T10   -->
+<!--                              ,T11   -->
+<!--                              ,T12   -->
+<!--                              ,T13   -->
+<!--                              ,T20   -->
+<!--                              ,T21   -->
+<!--                              ,T22   -->
+<!--                              ,T23   -->
+<!--                              ,T24   -->
+<!--                              ,T25   -->
+<!--                              ,T26   -->
+<!--                              ,T27   -->
+<!--                              ,T28   -->
+<!--                              ,T29   -->
+<!--                              ,MEASURE_DT -->
+<!--                              ,CAVITY_NORMAL -->
+<!--                              ,CAVITY_CAUTION -->
+<!--                              ,CAVITY_DANGER -->
+<!--                              ,DIAG_CD -->
+<!--                     FROM     ST_TEETH_MEASURE -->
+<!--                     WHERE    USER_ID = #{userId} -->
+<!--                     AND      DATE_FORMAT(MEASURE_DT, '%Y-%m-%d') <![CDATA[>=]]> #{startDt} -->
+<!--                     AND      DATE_FORMAT(MEASURE_DT, '%Y-%m-%d') <![CDATA[<=]]> #{endDt} -->
+<!--                     GROUP BY MEASURE_DT -->
+<!--                  ) A -->
+<!-- 	     INNER JOIN ST_TEETH_MEASURE AS B -->
+<!-- 	     ON B.USER_ID = A.USER_ID -->
+<!-- 	     AND B.MEASURE_DT = A.MEASURE_DT -->
+<!-- 	     LIMIT 3 -->
+<!--    	</select> -->
+    
+    
+    
+    
+    
+<!-- 	피측정자 정보 업데이트 -->
+<!--     <update id="updateTeethStatus" parameterType="String"> -->
+<!-- 		UPDATE ST_TEETH_INFO -->
+<!-- 		SET TEETH_STATUS  =  #{teethStatus} -->
+<!-- 		WHERE 1=1 -->
+<!-- 		AND USER_ID = #{userId} -->
+<!-- 		AND DATE_FORMAT(RECORD_DT, '%Y-%m-%d') = #{recordDt} -->
+<!--     </update> -->
+
+
+
+
+
+<!--     피측정자 정보 등록 -->
+<!--     <update id="insertTeethStatus" parameterType="String"> -->
+<!-- 		INSERT INTO ST_TEETH_INFO -->
+<!-- 		( -->
+<!-- 			USER_NO -->
+<!-- 			,USER_ID -->
+<!-- 			,TEETH_STATUS -->
+<!-- 			,RECORD_DT -->
+<!-- 		)  -->
+<!-- 		VALUES -->
+<!-- 		( -->
+<!-- 			NULL -->
+<!-- 			,#{userId} -->
+<!-- 			,#{teethStatus} -->
+<!-- 			,SYSDATE() -->
+<!-- 		) -->
+<!--     </update> -->
+    
+	
+	
+	
+	
+<!-- 	피측정자 정보 존재 여부 확인 (등록일 기준) -->
+<!-- 	<select id="selectCountTeethInfo" parameterType="String" resultType="Integer"> -->
+<!-- 		SELECT COUNT(*) FROM ST_TEETH_INFO -->
+<!-- 		WHERE 1=1  -->
+<!-- 		AND USER_ID = #{userId} -->
+<!-- 		AND DATE_FORMAT(RECORD_DT, '%Y-%m-%d') = #{recordDt}  -->
+<!-- 		ORDER BY RECORD_DT DESC -->
+<!-- 		LIMIT 1 -->
+<!-- 	</select> -->
+
+
+
+
+
+
+
+
+
+
+
+	
+</mapper>

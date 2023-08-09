@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="co.smartooth.app.mapper.DeviceMapper">
+
+
+    <!-- 회원 장비 정보 입력 -->
+	<insert id="insertDeviceInfo" parameterType="co.smartooth.app.vo.DeviceVO">
+		INSERT INTO ST_DEVICE_INFO
+			(
+				USER_NO
+				,USER_ID
+				,DEVICE_NAME
+				,DEVICE_CODE
+				,SERIAL_NO
+				,MAC_ADDRESS
+				,RGST_DT
+            )
+		VALUES
+			(
+				#{userNo}
+            	,#{userId}
+            	,#{deviceName}
+            	,#{deviceCode}
+            	,#{serialNo}
+            	,#{macAddress}
+            	,SYSDATE()
+           	) 
+	</insert>
+    
+    
+    
+    
+    <!-- 회원 장비의 캘리브레이션 값 INSERT -->
+	<insert id="insertCalibrationInfoValue" parameterType="co.smartooth.app.vo.CalibrationVO">
+		INSERT INTO ST_CALIBRATION_INFO
+        (
+        	USER_NO
+            ,USER_ID
+            ,CALIBRATION_AIR
+            ,CALIBRATION_KIT
+            ,CALIBRATION_REF
+            ,MAC_ADDRESS
+            ,CALIBRATION_DT
+		)
+		VALUES
+		(
+			#{userNo}
+            ,#{userId}
+            ,#{calibrationAir}
+            ,#{calibrationKit}
+            ,#{calibrationRef}
+            ,#{macAddress}
+		<choose>
+			<when test="calibrationDt != null and calibrationDt != '' ">
+            ,#{calibrationDt}
+           	</when>
+           	<otherwise>
+			,SYSDATE()            	
+           	</otherwise>
+		</choose>
+		) 
+	</insert>
+	
+	
+	
+	
+	<!-- 회원 장비의 캘리브레이션 값 UPDATE -->
+    <update id="updateCalibrationInfoValue" parameterType="co.smartooth.app.vo.CalibrationVO">
+		UPDATE ST_CALIBRATION_INFO
+		SET  
+			CALIBRATION_AIR = #{calibrationAir}
+            ,CALIBRATION_KIT = #{calibrationKit}
+            ,CALIBRATION_REF = #{calibrationRef}
+            ,CALIBRATION_DT = SYSDATE()
+		WHERE 1=1
+		AND USER_ID = #{userId}
+		AND USER_NO = #{userNo}
+		AND MAC_ADDRESS = #{macAddress}
+		AND DATE_FORMAT(CALIBRATION_DT, '%Y-%m-%d') = #{calibrationDt}
+    </update>
+   	
+   	
+   	
+   	
+   	<!-- 기준의 오늘날짜와 맥주소 -->
+   	<!-- 회원 장비의 캘리브레이션 측정 값을 저장하기 위해 현재 회원이 측정한 캘리브레이션 값이 오늘 데이터인지 확인 후 값 반환(0 : 오늘X, 1: 오늘) -->
+	<select id="isExistCalibrationValueByMacAndDate" resultType="Integer" parameterType="co.smartooth.app.vo.CalibrationVO">
+		SELECT COUNT(*)
+		  FROM ST_CALIBRATION_INFO
+	 	 WHERE 1=1
+			AND USER_ID = #{userId}
+			AND USER_NO = #{userNo}
+			AND MAC_ADDRESS = #{macAddress}
+			AND DATE_FORMAT(CALIBRATION_DT, '%Y-%m-%d') = #{calibrationDt}
+   	</select>
+    
+    
+    
+    
+     <!-- 회원 장비의 캘리브레이션 측정 값을 저장하기 위해 현재 회원이 측정한 캘리브레이션 값이 오늘 데이터인지 확인 후 값 반환(0 : 오늘X, 1: 오늘) -->
+	<!-- 	<select id="selectUserCalibrationValueByDate" resultType="Integer" parameterType="co.smartooth.app.vo.CalibrationVO"> -->
+	<!-- 		SELECT COUNT(*) -->
+	<!-- 		  FROM ST_CALIBRATION_INFO -->
+	<!-- 	 	 WHERE 1=1 -->
+	<!-- 			 AND USER_ID = #{userId} -->
+	<!-- 			AND USER_NO = #{userNo} -->
+	<!-- 			AND DATE_FORMAT(CALIBRATION_DT, '%Y-%m-%d') = #{calibrationDt} -->
+	<!--    	</select> -->
+    
+    
+</mapper>

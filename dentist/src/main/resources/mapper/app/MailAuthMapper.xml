@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="co.smartooth.app.mapper.MailAuthMapper">
+
+
+
+	<!-- 회원의 생성 및 메일 인증번호(authkey) 생성-->
+	<insert id="insertAuthKeyById" parameterType="co.smartooth.app.vo.MailAuthVO">
+       INSERT INTO ST_MAIL_AUTH_INFO
+            (
+	             USER_ID
+	             ,AUTH_KEY
+	             ,AUTH_STATUS
+             )
+		VALUES
+			(
+				#{userId}
+	            ,#{authKey}
+	            ,'N'
+	         ); 
+    </insert>
+    
+    
+    
+    
+    
+    <!-- 회원 회원가입 여부 확인 (이메일 인증 전) -->
+    <select id="selectMailAuthInfo" parameterType="co.smartooth.app.vo.MailAuthVO" resultType="Integer">
+        SELECT COUNT(*) FROM ST_MAIL_AUTH_INFO
+        WHERE USER_ID = #{userId}
+    </select>
+    
+    
+    
+    
+    
+	<!-- 회원의 인증키(authkey) 값 업데이트 -->
+	<update id="updateAuthKeyById" parameterType="co.smartooth.app.vo.MailAuthVO">
+       UPDATE ST_MAIL_AUTH_INFO
+            SET AUTH_KEY = #{authKey}
+		WHERE USER_ID = #{userId}
+    </update>
+    
+    
+    
+    
+    
+	<!-- 인증 메일 클릭 시 인증 상태를 'Y' 로 업데이트 -->
+	<update id="updateAuthStatusY" parameterType="String">
+       UPDATE ST_MAIL_AUTH_INFO
+            SET AUTH_STATUS = 'Y'
+		WHERE USER_ID = #{userId}
+    </update>
+
+
+
+
+
+	<!-- 인증 메일 요청 시 인증 상태를 'N' 로 업데이트 -->
+	<update id="updateAuthStatusN" parameterType="String">
+       UPDATE ST_MAIL_AUTH_INFO
+            SET AUTH_STATUS = 'N'
+		WHERE USER_ID = #{userId}
+    </update>
+    
+    
+    
+    
+    
+    <!-- 회원 회원가입 여부 확인 (이메일 인증 전) -->
+    <select id="selectIdWhetherOrNot" parameterType="String" resultType="Integer">
+        SELECT COUNT(*) FROM ST_USER
+        WHERE USER_ID = #{userId}
+    </select>
+    
+    
+    
+    
+    
+    <!-- 회원 회원가입 여부 확인 (이메일 인증 전) -->
+    <select id="isEmailAuthEnabled" parameterType="String" resultType="String">
+        SELECT AUTH_STATUS FROM ST_MAIL_AUTH_INFO
+        WHERE USER_ID = #{userId}
+    </select>    
+        
+        
+        
+        
+        
+</mapper>

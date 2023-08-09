@@ -1,0 +1,60 @@
+#LOCAL SERVER
+#스마투스 일반 앱 서버 설정
+spring:
+    profiles: 
+        active: local
+    #datasource (mariaDB)
+    datasource:
+        driver-class-name: net.sf.log4jdbc.sql.jdbcapi.DriverSpy
+        #개발서버
+        #db-url: jdbc:log4jdbc:mariadb://smartooth-premium-dev.cdx8q9adtw2b.ap-northeast-2.rds.amazonaws.com/smartooth_dentist_local
+        #db-url: jdbc:log4jdbc:mariadb://smartooth-premium-dev.cdx8q9adtw2b.ap-northeast-2.rds.amazonaws.com/smartooth_dentist
+        #운영서버 DEV Database - smartooth_premium
+        db-url: jdbc:log4jdbc:mariadb://smartooth-premium-dev.cdx8q9adtw2b.ap-northeast-2.rds.amazonaws.com/smartooth_premium
+        ##db-url: jdbc:log4jdbc:mariadb://smartooth-dev-database.cdx8q9adtw2b.ap-northeast-2.rds.amazonaws.com:3306/smartooth_premium
+        #테스트서버 - 미국
+        #db-url: jdbc:log4jdbc:mariadb://smartooth-us-database.cs4boanjdk1j.us-west-1.rds.amazonaws.com:3306/smartooth_premium
+        db-username: smartooth
+        db-password: smartooth509#
+
+    loginUrl: localhost:8090
+    #loginUrl: localhost:90
+        
+    mvc:
+        view:
+            prefix: /WEB-INF/views/
+            suffix: .jsp
+        static-path-pattern : /static/**
+        servlet:
+            load-onstartup: 1
+        
+    #메일 발송 부분은 로직은 동일, 메일 발송 HOST, ID, 비밀번호만 변경해주면 됨
+    mailsendername: Smartooth KOREA
+    mailusername: contact@smartooth.co
+    mailpassword: lKX7ucWCMADB
+    #mailpassword: tkffla509
+  
+  
+    mybatis:
+        configuration:
+            map-underscore-to-camel-case: 'true'
+
+
+    jwt:
+        secretKey: tmakxntmzhfldk
+        
+        
+    web:
+        resources:
+            static-locations : classpath:/static-location/
+            
+server:
+    #로컬 local
+    ip: 127.0.0.1
+    port: 8090
+            
+#---
+#spring:
+#    web:
+#        resources:
+#            add-mappings: 'true'

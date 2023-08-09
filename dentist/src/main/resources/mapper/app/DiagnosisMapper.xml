@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="co.smartooth.app.mapper.DiagnosisMapper">
+
+
+
+	<!-- 중위 진단 정보 조회  -->
+    <select id="selectDiagDept2List" parameterType="String" resultType="co.smartooth.app.vo.DiagnosisVO">
+      
+        SELECT 
+        	DIAG_CD
+        	,DIAG_NO
+        	,DIAG_NM
+		FROM ST_DIAG_DEPT2
+		WHERE 1=1
+		AND TEETH_TYPE = #{teethType}
+		  
+    </select>
+
+	
+	
+</mapper>

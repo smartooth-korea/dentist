@@ -1,0 +1,136 @@
+@charset "UTF-8";
+@font-face {
+	font-family: 'NanumSquareR';
+	src: url(/fonts/NanumSquareR.ttf) format('truetype');
+}
+
+body{
+	font-family: 'NanumSquareR';
+}
+
+.commonHeight2 {height: 2px;}
+.commonHeight3 {height: 3px;}
+.commonHeight5 {height: 5px;}
+.commonHeight10 {height: 10px;}
+.commonHeight15 {height: 15px;}
+.commonHeight18 {height: 18px;}
+.commonHeight20 {height: 20px;}
+.commonHeight22 {height: 22px;}
+.commonHeight25 {height: 25px;} 
+.commonHeight30 {height: 30px;}
+.commonHeight35 {height: 35px;}
+.commonHeight38 {height: 38px;}
+.commonHeight40 {height: 40px;}
+.commonHeight45 {height: 45px;} 
+.commonHeight50 {height: 50px;}
+.commonHeight55 {height: 55px;} 
+.commonHeight57 {height: 57px;} 
+.commonHeight60 {height: 60px;}
+.commonHeight65 {height: 65px;}
+.commonHeight70 {height: 70px;}
+.commonHeight75 {height: 75px;}
+.commonHeight80 {height: 80px;}
+.commonHeight85 {height: 85px;}
+.commonHeight90 {height: 90px;}
+.commonHeight95 {height: 95px;}
+.commonHeight100 {height: 100px;}
+.commonHeight105 {height: 105px;}
+.commonHeight110 {height: 110px;}
+.commonHeight115 {height: 115px;}
+.commonHeight120 {height: 120px;}
+.commonHeight150 {height: 150px;}
+.commonHeight200 {height: 200px;}
+.commonHeight210 {height: 210px;}
+.commonHeight220 {height: 220px;}
+.commonHeight230 {height: 230px;}
+.commonHeight240 {height: 240px;}
+.commonHeight250 {height: 250px;}
+.commonHeight300 {height: 300px;}        
+.commonHeight350 {height: 350px;} 
+
+
+.commonWidth5  {width:  5px;}
+.commonWidth10 {width: 10px;}
+.commonWidth15 {width: 15px;}
+.commonWidth18 {width: 18px;}
+.commonWidth20 {width: 20px;}
+.commonWidth22 {width: 22px;}
+.commonWidth25 {width: 25px;}
+.commonWidth30 {width: 30px;}
+.commonWidth35 {width: 35px;}
+.commonWidth38 {width: 38px;}
+.commonWidth40 {width: 40px;}
+.commonWidth45 {width: 45px;}
+.commonWidth50 {width: 50px;}
+.commonWidth55 {width: 55px;}
+.commonWidth57 {width: 57px;}
+.commonWidth60 {width: 60px;}
+.commonWidth65 {width: 65px;}
+.commonWidth70 {width: 70px;}
+.commonWidth75 {width: 75px;}
+.commonWidth80 {width: 80px;}
+.commonWidth85 {width: 80px;}
+.commonWidth90 {width: 90px;}
+.commonWidth95 {width: 95px;}
+
+
+.commonWidth10p {width: 10%;}
+.commonWidth15p {width: 15%;}
+.commonWidth35p {width: 30%;}
+.commonWidth50p {width: 50%;}
+.commonWidth85p {width: 85%;}
+.commonWidth90p {width: 90%;}
+.commonWidth95p {width: 95%;}
+.commonWidth100p {width: 100%;}
+
+
+.commonPaddingTop5{padding-top: 5px;}
+.commonPaddingTop8{padding-top: 8px;}
+.commonPaddingTop10{padding-top: 10px;}
+.commonPaddingTop15{padding-top: 15px;}
+.commonPaddingTop20{padding-top: 20px;}
+.commonPaddingTop25{padding-top: 25px;}
+.commonPaddingTop30{padding-top: 30px;}
+.commonPaddingTop35{padding-top: 35px;}
+.commonPaddingTop40{padding-top: 40px;}
+.commonPaddingTop45{padding-top: 45px;}
+.commonPaddingTop50{padding-top: 50px;}
+
+
+.commonPaddingbottom5{padding-bottom: 5px;}
+.commonPaddingbottom10{padding-bottom: 10px;}
+.commonPaddingbottom15{padding-bottom: 15px;}
+.commonPaddingbottom20{padding-bottom: 20px;}
+.commonPaddingbottom25{padding-bottom: 25px;}
+.commonPaddingbottom30{padding-bottom: 30px;}
+.commonPaddingbottom35{padding-bottom: 35px;}
+.commonPaddingbottom40{padding-bottom: 40px;}
+.commonPaddingbottom45{padding-bottom: 45px;}
+.commonPaddingbottom50{padding-bottom: 50px;}
+
+
+.commonPaddingleft5{padding-left: 5px;}
+.commonPaddingleft10{padding-left: 10px;}
+.commonPaddingleft15{padding-left: 15px;}
+.commonPaddingleft20{padding-left: 20px;}
+.commonPaddingleft25{padding-left: 25px;}
+.commonPaddingleft30{padding-left: 30px;}
+.commonPaddingleft35{padding-left: 35px;}
+.commonPaddingleft40{padding-left: 40px;}
+.commonPaddingleft45{padding-left: 45px;}
+.commonPaddingleft50{padding-left: 50px;}
+
+
+.commonPaddingright5{padding-right: 5px;}
+.commonPaddingright10{padding-right: 10px;}
+.commonPaddingright15{padding-right: 15px;}
+.commonPaddingright20{padding-right: 20px;}
+.commonPaddingright25{padding-right: 25px;}
+.commonPaddingright30{padding-right: 30px;}
+.commonPaddingright35{padding-right: 35px;}
+.commonPaddingright40{padding-right: 40px;}
+.commonPaddingright45{padding-right: 45px;}
+.commonPaddingright50{padding-right: 50px;}
+
+.commonWidth125Height25 {width: 120px;height: 25px;}
+

@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="co.smartooth.app.mapper.OrganMapper">
+
+
+	<!-- 부서 목록 조회 -->
+    <select id="selectDepartmentList" parameterType="String" resultType="hashmap">
+    
+		SELECT 
+			SCI.SCHOOL_CODE								AS SCHOOL_CODE
+			,SSI.SCHOOL_NAME								AS SCHOOL_NAME
+			,SCI.CLASS_CODE								AS CLASS_CODE
+			,SCI.CLASS_NAME								AS CLASS_NAME
+		FROM ST_CLASS_INFO SCI
+		LEFT OUTER JOIN ST_SCHOOL_INFO SSI
+		ON SCI.SCHOOL_CODE = SSI.SCHOOL_CODE
+		WHERE 1=1 
+		AND SCI.SCHOOL_CODE = #{organCode}
+		ORDER BY SSI.SCHOOL_CODE ASC, CLASS_CODE ASC
+		
+    </select>
+	
+	
+	
+	<!-- 등록 되어 있는 측정 예정 혹은 측정 완료 기관 목록 조회 (SYSDATE 기준) --> 
+    <select id="selectMeasureOrganList" parameterType="String" resultType="hashmap">
+		
+		SELECT SMOL.USER_ID													AS USER_ID
+		   ,SMOL.ORGAN_CODE											AS SCHOOL_CODE
+		   ,STHI.DENTAL_HOSPITAL_NM									AS SCHOOL_NAME
+		   ,DATE_FORMAT(SMOL.MEASURE_DT, '%Y-%m-%d') 				AS MEASURE_DT
+		FROM ST_MEASURE_ORGAN_LOG SMOL
+		LEFT OUTER JOIN ST_DENTAL_HOSPITAL_INFO STHI
+		ON SMOL.ORGAN_CODE = STHI.DENTAL_HOSPITAL_CD
+		WHERE 1=1
+		AND USER_ID = #{userId}
+
+    </select >
+
+
+
+	<!-- 치과 정보 조회 --> 
+    <select id="selectDentalHospitalInfo" parameterType="String" resultType="hashmap">
+		
+		SELECT DENTAL_HOSPITAL_ID,
+		       DENTAL_HOSPITAL_CD,
+		       DENTAL_HOSPITAL_NM,
+		       DENTAL_HOSPITAL_EMAIL,
+		       DENTAL_HOSPITAL_TEL_NO,
+		       DENTAL_HOSPITAL_COUNTRY,
+		       DENTAL_HOSPITAL_SIDO_NM,
+		       DENTAL_HOSPITAL_SIGUNGU_NM,
+		       DENTAL_HOSPITAL_EUPMYEONDONG_NM,
+		       DENTAL_HOSPITAL_LOGO_IMG,
+		       DENTAL_HOSPITAL_SEQ_NO
+		FROM ST_DENTAL_HOSPITAL_INFO
+		WHERE 1=1
+		AND DENTAL_HOSPITAL_CD = #{dentalHospitalCd}
+
+    </select >
+	
+</mapper>
