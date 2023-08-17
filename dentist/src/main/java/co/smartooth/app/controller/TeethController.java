@@ -579,7 +579,50 @@ public class TeethController {
 	  	
 	  	
 	  	/**
-		 * 기능 : 회원의 메모 수정
+		 * 기능 : 회원 치아 상태 정보 업데이트(수정)
+		 * 작성자 : 정주현
+		 * 작성일 : 2023. 07. 19
+		 * 수정일 : 2023. 08. 17
+		 */
+	  	@PostMapping({ "/dentist/user/updateTeethStatus.do" })
+		@ResponseBody
+		public HashMap<String, Object> updateTeethStatus(@RequestBody HashMap<String, Object> paramMap,
+				HttpServletRequest request) throws Exception {
+
+			String userId = (String) paramMap.get("userId");
+			String teethStatus = (String) paramMap.get("teethStatus");
+			int isExist = 0;
+			LocalDate now = LocalDate.now();
+			DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+			String measureDt = now.format(formatter);
+
+			HashMap<String, Object> hm = new HashMap<String, Object>();
+			TeethMeasureVO teethMeasureVO = new TeethMeasureVO();
+
+			try {
+				isExist = teethService.selectCountTeethInfo(userId, measureDt);
+				if (isExist == 1) {
+					teethService.updateTeethStatus(userId, teethStatus, measureDt);
+				} else {
+					teethService.insertTeethStatus(userId, teethStatus);
+				}
+
+			} catch (Exception e) {
+				hm.put("code", "500");
+				hm.put("msg", "Server error");
+				e.printStackTrace();
+			}
+
+			hm.put("code", "000");
+			hm.put("msg", "Success");
+			hm.put("memoInfo", teethMeasureVO);
+			return hm;
+		}
+	  	
+	  	
+	  	
+	  	/**
+		 * 기능 : 회원의 메모 업데이트(수정)
 		 * 작성자 : 정주현
 		 * 작성일 : 2023. 07. 19
 		 * 수정일 : 2023. 08. 07

@@ -90,8 +90,19 @@ public interface TeethService {
 	public void updateMeasurerId(@Param("userId") String userId, @Param("measurerId") String measurerId, @Param("measureDt") String measureDt) throws Exception;
 	
 	
+	// 피측정자 치아 정보 등록
+	public void insertTeethStatus(@Param("userId") String userId, @Param("teethStatus") String teethStatus) throws Exception;
+
+	
+	// 피측정자 치아 정보 업데이트
+	public void updateTeethStatus(@Param("userId") String userId, @Param("teethStatus") String teethStatus, @Param("recordDt") String recordDt) throws Exception;
 	
 	
+	// 피측정자 치아 정보 갯수 조회
+	public int selectCountTeethInfo(@Param("userId") String userId, @Param("recordDt") String recordDt) throws Exception;
+
+		 
+		 
 	// 피측정자 치아 상태 값 조회
 	// public List<TeethInfoVO> selectUserTeethInfo(UserVO userVO) throws Exception; 
 	
@@ -127,18 +138,6 @@ public interface TeethService {
     
 	// 피측정자 치아 측정 값 목록 조회 (최근 3개)
     // public List<TeethMeasureVO> selectUserMeasureValueList(@Param("userId") String userId, @Param("startDt") String startDt, @Param("endDt") String endDt) throws Exception;
-	
-	
-	// 피측정자 치아 정보 업데이트
-	// public void updateTeethStatus(@Param("userId") String userId, @Param("teethStatus") String teethStatus, @Param("recordDt") String recordDt) throws Exception;
-	
-	
-	// 피측정자 치아 정보 등록
-	// public void insertTeethStatus(@Param("userId") String userId, @Param("teethStatus") String teethStatus) throws Exception;
-	
-	
-	// 피측정자 치아 정보 갯수 조회
-	// public int selectCountTeethInfo(@Param("userId") String userId, @Param("recordDt") String recordDt) throws Exception;
 	
 	
 	

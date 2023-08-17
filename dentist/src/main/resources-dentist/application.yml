@@ -9,12 +9,12 @@ spring:
     datasource:
         driver-class-name: net.sf.log4jdbc.sql.jdbcapi.DriverSpy
         #운영서버 Prod Database (ADMIN)
-        db-url: jdbc:log4jdbc:mariadb://smartooth-database.cdx8q9adtw2b.ap-northeast-2.rds.amazonaws.com:3306/Smartooth
+        db-url: jdbc:log4jdbc:mariadb://smartooth-premium-dev.cdx8q9adtw2b.ap-northeast-2.rds.amazonaws.com/smartooth_premium
         #db-url: jdbc:log4jdbc:mariadb://smartooth-prod-database.cdx8q9adtw2b.ap-northeast-2.rds.amazonaws.com:3306/Smartooth
         db-username: smartooth
         db-password: smartooth509#
 
-    loginUrl: 13.124.37.209:8090
+    loginUrl: 13.209.156.47:8090
         
     mvc:
         view:
@@ -25,8 +25,8 @@ spring:
         
     #메일 발송 부분은 로직은 동일, 메일 발송 HOST, ID, 비밀번호만 변경해주면 됨
     mailsendername: Smartooth KOREA
-    mailusername: manager@smartooth.co
-    mailpassword: dkagh1505!@
+    mailusername: contact@smartooth.co
+    mailpassword: lKX7ucWCMADB
   
   
     mybatis:
@@ -44,7 +44,7 @@ spring:
 
 server:
     #운영 Prod (AWS)
-    ip: 13.124.37.209
+    ip: 13.209.156.47
     port: 8090
 
             

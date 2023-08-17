@@ -813,50 +813,50 @@
     
     
     
-<!-- 	피측정자 정보 업데이트 -->
-<!--     <update id="updateTeethStatus" parameterType="String"> -->
-<!-- 		UPDATE ST_TEETH_INFO -->
-<!-- 		SET TEETH_STATUS  =  #{teethStatus} -->
-<!-- 		WHERE 1=1 -->
-<!-- 		AND USER_ID = #{userId} -->
-<!-- 		AND DATE_FORMAT(RECORD_DT, '%Y-%m-%d') = #{recordDt} -->
-<!--     </update> -->
-
-
-
-
-
-<!--     피측정자 정보 등록 -->
-<!--     <update id="insertTeethStatus" parameterType="String"> -->
-<!-- 		INSERT INTO ST_TEETH_INFO -->
-<!-- 		( -->
-<!-- 			USER_NO -->
-<!-- 			,USER_ID -->
-<!-- 			,TEETH_STATUS -->
-<!-- 			,RECORD_DT -->
-<!-- 		)  -->
-<!-- 		VALUES -->
-<!-- 		( -->
-<!-- 			NULL -->
-<!-- 			,#{userId} -->
-<!-- 			,#{teethStatus} -->
-<!-- 			,SYSDATE() -->
-<!-- 		) -->
-<!--     </update> -->
+   	<!-- 피측정자 정보 등록 -->
+    <update id="insertTeethStatus" parameterType="String">
+		INSERT INTO ST_TEETH_INFO
+		(
+			USER_NO
+			,USER_ID
+			,TEETH_STATUS
+			,RECORD_DT
+		) 
+		VALUES
+		(
+			NULL
+			,#{userId}
+			,#{teethStatus}
+			,SYSDATE()
+		)
+    </update>
     
-	
-	
-	
-	
-<!-- 	피측정자 정보 존재 여부 확인 (등록일 기준) -->
-<!-- 	<select id="selectCountTeethInfo" parameterType="String" resultType="Integer"> -->
-<!-- 		SELECT COUNT(*) FROM ST_TEETH_INFO -->
-<!-- 		WHERE 1=1  -->
-<!-- 		AND USER_ID = #{userId} -->
-<!-- 		AND DATE_FORMAT(RECORD_DT, '%Y-%m-%d') = #{recordDt}  -->
-<!-- 		ORDER BY RECORD_DT DESC -->
-<!-- 		LIMIT 1 -->
-<!-- 	</select> -->
+    
+    
+    
+    
+	<!-- 피측정자 정보 업데이트(수정) -->
+    <update id="updateTeethStatus" parameterType="String">
+		UPDATE ST_TEETH_INFO
+		SET TEETH_STATUS  =  #{teethStatus}
+		WHERE 1=1
+		AND USER_ID = #{userId}
+		AND DATE_FORMAT(RECORD_DT, '%Y-%m-%d') = #{recordDt}
+    </update>
+    
+    
+    
+    
+    
+	<!-- 피측정자 정보 존재 여부 확인 (등록일 기준) -->
+	<select id="selectCountTeethInfo" parameterType="String" resultType="Integer">
+		SELECT COUNT(*) FROM ST_TEETH_INFO
+		WHERE 1=1 
+		AND USER_ID = #{userId}
+		AND DATE_FORMAT(RECORD_DT, '%Y-%m-%d') = #{recordDt} 
+		ORDER BY RECORD_DT DESC
+		LIMIT 1
+	</select>
 
 
 

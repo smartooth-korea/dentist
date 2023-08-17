@@ -163,7 +163,30 @@ public class TeethServiceImpl implements TeethService{
 	public void updateMeasurerId(String userId, String measurerId, String measureDt) throws Exception {
 		teethMapper.updateMeasurerId(userId, measurerId, measureDt);
 	}
+	
+	
+	
+	// 피측정자 치아 정보 등록
+	@Override
+	public void insertTeethStatus(@Param("userId") String userId, @Param("teethStatus") String teethStatus) throws Exception {
+		teethMapper.insertTeethStatus(userId, teethStatus);
+	}
 
+	
+	
+	// 피측정자 치아 정보 업데이트
+	@Override
+	public void updateTeethStatus(@Param("userId") String userId, @Param("teethStatus") String teethStatus, @Param("recordDt") String recordDt) throws Exception {
+		teethMapper.updateTeethStatus(userId, teethStatus, recordDt);
+	}
+
+	
+	
+	// 피측정자 치아 정보 갯수 조회
+	@Override
+	public int selectCountTeethInfo(@Param("userId") String userId, @Param("recordDt") String recordDt) throws Exception {
+		return teethMapper.selectCountTeethInfo(userId, recordDt);
+	}
 
 
 	
@@ -238,30 +261,5 @@ public class TeethServiceImpl implements TeethService{
 //    public List<TeethMeasureVO> selectUserMeasureValueList(@Param("userId") String userId, @Param("startDt") String startDt, @Param("endDt") String endDt) throws Exception {
 //		return teethMapper.selectUserMeasureValueList(userId, startDt, endDt);
 //	}
-	
-	
-
-//	// 피측정자 치아 정보 업데이트
-//	@Override
-//	public void updateTeethStatus(@Param("userId") String userId, @Param("teethStatus") String teethStatus, @Param("recordDt") String recordDt) throws Exception {
-//		teethMapper.updateTeethStatus(userId, teethStatus, recordDt);
-//	}
-
-
-
-//	// 피측정자 치아 정보 등록
-//	@Override
-//	public void insertTeethStatus(@Param("userId") String userId, @Param("teethStatus") String teethStatus) throws Exception {
-//		teethMapper.insertTeethStatus(userId, teethStatus);
-//	}
-
-
-	
-//	// 피측정자 치아 정보 갯수 조회
-//	@Override
-//	public int selectCountTeethInfo(@Param("userId") String userId, @Param("recordDt") String recordDt) throws Exception {
-//		return teethMapper.selectCountTeethInfo(userId, recordDt);
-//	}
-
 
 }
