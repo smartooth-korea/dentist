@@ -16,6 +16,8 @@ spring:
         #db-url: jdbc:log4jdbc:mariadb://smartooth-us-database.cs4boanjdk1j.us-west-1.rds.amazonaws.com:3306/smartooth_premium
         db-username: smartooth
         db-password: smartooth509#
+        
+        
 
     loginUrl: localhost:8090
     #loginUrl: localhost:90

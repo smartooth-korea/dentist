@@ -10,7 +10,7 @@ import co.smartooth.app.vo.UserVO;
 /**
  * 작성자 : 정주현 
  * 작성일 : 2022. 04. 28
- * 수정일 : 2023. 08. 07
+ * 수정일 : 2023. 09. 26
  * 서버분리 : 2023. 08. 01
  */
 public interface UserService {
@@ -102,6 +102,10 @@ public interface UserService {
 	
 	// 개인정보 제공을 동의한 환자 목록(SYSDATE)
 	public List<HashMap<String, Object>> selectInfomationAgreeUserList(@Param("dentalHospitalCd") String dentalHospitalCd) throws Exception;	
+	
+	
+	// 일반 등록 전환 전 일반 사용자 중 동일한 개인정보를 가지고 있는지 여부 확인
+	public HashMap<String, Object> duplicateChkUserInfo(UserVO userVO) throws Exception;
 	
 	
 	

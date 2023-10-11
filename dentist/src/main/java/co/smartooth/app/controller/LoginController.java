@@ -66,7 +66,7 @@ public class LoginController {
 	    logger.debug("========== dentist.LoginController ========== /dentist/login.do ==========");
 
 	    
-	    String lang = (String)paramMap.get("lang");
+	    // String lang = (String)paramMap.get("lang");
 	    // 하드코딩
 	    //if(lang == null || lang.equals("")) {
 	    //	lang = "ko";
@@ -139,18 +139,18 @@ public class LoginController {
 			if(loginChkByIdPwd == 0){ // 0일 경우는 Database에 ID와 비밀번호가 틀린 것
 				isIdExist = authService.isIdExist(authVO.getUserId());
 				if(isIdExist == 0) { // ID가 존재하지 않을 경우
-					if(lang.equals("ko")) {
+					//if(lang.equals("ko")) {
 						hm.put("msg", "해당 아이디가 존재하지 않습니다");
-					}else if(lang.equals("en")) {
-						hm.put("msg", "This ID does not exist");
-					}
+					//}else if(lang.equals("en")) {
+					//	hm.put("msg", "This ID does not exist");
+					//}
 				}else { // PWD가 틀렸을 경우
 					hm.put("code", "406");
-					if(lang.equals("ko")) {
+					//if(lang.equals("ko")) {
 						hm.put("msg", "비밀번호가 틀렸습니다");
-					}else if(lang.equals("en")) {
-						hm.put("msg", "The password is wrong");
-					}
+					//}else if(lang.equals("en")) {
+					//	hm.put("msg", "The password is wrong");
+					//}
 				}
 			}else {
 				
@@ -210,22 +210,22 @@ public class LoginController {
 				
 				// 메시지 RETURN
 				hm.put("code", "000");
-				if(lang.equals("ko")) {
+				//if(lang.equals("ko")) {
 					hm.put("msg", "로그인 성공");
-				}else if(lang.equals("en")) {
-					hm.put("msg", "Login Success");
-				}
+				//}else if(lang.equals("en")) {
+				//	hm.put("msg", "Login Success");
+				//}
 				
 				// 로그인 Log 등록
 				logService.insertUserLoginHistory(authVO);
 			}
 		} catch (Exception e) {
 			hm.put("code", "500");
-			if(lang.equals("ko")) {
+			//if(lang.equals("ko")) {
 				hm.put("msg", "로그인에 실패하였습니다.\n관리자에게 문의해주시기 바랍니다.");
-			}else if(lang.equals("en")) {
-				hm.put("msg", "Server Error");
-			}
+			//}else if(lang.equals("en")) {
+			//	hm.put("msg", "Server Error");
+			//}
 			e.printStackTrace();
 		}
 		return hm;

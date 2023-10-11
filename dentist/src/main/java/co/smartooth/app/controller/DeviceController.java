@@ -48,7 +48,8 @@ public class DeviceController {
 	 * 작성일 : 2022. 05. 19
 	 * 수정일 : 2022. 08. 03
 	 */
-	@PostMapping(value = {"/dentist/user/insertDeviceInfo.do"})
+//	@PostMapping(value = {"/dentist/user/insertDeviceInfo.do"})
+	@PostMapping(value = {"/premium/user/insertDeviceInfo.do"})
 	@ResponseBody
 	public HashMap<String,Object> insertDeviceInfo(@RequestBody HashMap<String, Object> paramMap, HttpServletRequest request) throws Exception {
 		
@@ -113,7 +114,7 @@ public class DeviceController {
 	 * 작성자 : 정주현 
 	 * 작성일 : 2022. 5. 19
 	 */												
-	@PostMapping(value = {"/dentist/user/insertCalibrationInfoValue.do"})
+	@PostMapping(value = {"/premium/user/insertCalibrationInfoValue.do"})
 	@ResponseBody
 	public HashMap<String,Object> insertCalibrationInfoValue(@RequestBody HashMap<String, Object> paramMap, HttpServletRequest request) throws Exception {
 		

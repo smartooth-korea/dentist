@@ -584,7 +584,8 @@ public class TeethController {
 		 * 작성일 : 2023. 07. 19
 		 * 수정일 : 2023. 08. 17
 		 */
-	  	@PostMapping({ "/dentist/user/updateTeethStatus.do" })
+//	  	@PostMapping({ "/dentist/user/updateTeethStatus.do" })
+	  	@PostMapping({ "/premium/user/updateTeethStatus.do" })
 		@ResponseBody
 		public HashMap<String, Object> updateTeethStatus(@RequestBody HashMap<String, Object> paramMap,
 				HttpServletRequest request) throws Exception {
@@ -609,7 +610,8 @@ public class TeethController {
 
 			} catch (Exception e) {
 				hm.put("code", "500");
-				hm.put("msg", "Server error");
+				// hm.put("msg", "Server error");
+				hm.put("msg", "치아 상태 정보 업데이트에 실패했습니다.\n관리자에게 문의해주시기 바랍니다.");
 				e.printStackTrace();
 			}
 
@@ -627,10 +629,9 @@ public class TeethController {
 		 * 작성일 : 2023. 07. 19
 		 * 수정일 : 2023. 08. 07
 		 */
-		@PostMapping(value = { "/dentist/user/updateMemo.do" })
+		@PostMapping(value = { "/premium/user/updateMemo.do" })
 		@ResponseBody
-		public HashMap<String, Object> updateMemo(@RequestBody HashMap<String, Object> paramMap, HttpServletRequest request)
-				throws Exception {
+		public HashMap<String, Object> updateMemo(@RequestBody HashMap<String, Object> paramMap, HttpServletRequest request) throws Exception {
 
 			String userId = (String) paramMap.get("userId");
 			String memo = (String) paramMap.get("memo");
@@ -638,26 +639,39 @@ public class TeethController {
 			// 오늘 날짜 구하기 (SYSDATE)
 			LocalDate now = LocalDate.now();
 			DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-			String measureDt = now.format(formatter);
+			LocalDate minusYears = now.minusYears(1);
+
+			String startDt = minusYears.format(formatter);
+			String endDt = now.format(formatter);
+			String measureDt = endDt;
 
 			HashMap<String, Object> hm = new HashMap<String, Object>();
 			TeethMeasureVO teethMeasureVO = new TeethMeasureVO();
-
+			
 			try {
 				if (!"ÿ".equals(memo)) {
-					// 파라미터로 받은 MEMO 정보를 업데이트
+					
+					int isExistSysDateRow = teethService.isExistSysDateRow(userId);
+					if(isExistSysDateRow == 0) {
+						// 측정 값이 없을 경우 측정 ROW 생성
+						teethMeasureVO.setUserId(userId);
+						teethMeasureVO.setStartDt(startDt);
+						teethMeasureVO.setEndDt(endDt);
+						teethMeasureVO.setMeasureDt(measureDt);
+						List<TeethMeasureVO> userOldTeethMeasureValue = teethService.selectUserTeethMeasureValue(teethMeasureVO);
+						teethService.insertUserTeethMeasureValue(userOldTeethMeasureValue.get(0));
+						//teethService.updateUserToothMeasureValue(toothMeasureVO);
+					}
 					teethService.updateMemo(userId, memo, measureDt);
 				}
 				teethMeasureVO = teethService.selectMemo(userId, measureDt);
-
 			} catch (Exception e) {
 				hm.put("code", "500");
-				hm.put("msg", "메모 업데이트에 실패했습니다.\n관리자에게 문의해주시기 바랍니다.");
+				hm.put("msg", "메모 등록에 실패했습니다.\n관리자에게 문의해주시기 바랍니다.");
 				e.printStackTrace();
-
 			}
 			hm.put("code", "000");
-			hm.put("msg", "Success");
+			hm.put("msg", "메모 등록 성공");
 			hm.put("memoInfo", teethMeasureVO);
 			return hm;
 
@@ -705,10 +719,6 @@ public class TeethController {
 			return hm;
 
 		}
-
-	  	
-	  	
-	  	
 	  	
 }
 

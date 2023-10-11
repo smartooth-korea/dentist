@@ -260,6 +260,14 @@ public class UserServiceImpl implements UserService{
 	}
 
 
+
+	// 일반 등록 전환 전 일반 사용자 중 동일한 개인정보를 가지고 있는지 여부 확인
+	@Override
+	public HashMap<String, Object> duplicateChkUserInfo(UserVO userVO) throws Exception{
+		return userMapper.duplicateChkUserInfo(userVO);
+	}
+
+
 	
 	
 	

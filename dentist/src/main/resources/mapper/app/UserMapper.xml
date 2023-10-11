@@ -361,6 +361,7 @@
 					,SSUD.PA_USER_NAME													AS PA_USER_NAME
 					,SSUD.PA_USER_TEL_NO												AS PA_USER_TEL_NO
 		         	,SU.TEETH_TYPE															AS TEETH_TYPE
+		         	,SU.PUSH_TOKEN															AS PUSH_TOKEN
 		FROM ST_STUDENT_USER_DETAIL SSUD
 		LEFT OUTER JOIN ST_USER SU
 		ON SSUD.USER_ID = SU.USER_ID
@@ -627,21 +628,38 @@
 			,SU.USER_NAME																			AS USER_NAME
 			,SU.USER_BIRTHDAY																		AS USER_BIRTHDAY
 			,SU.USER_TEL_NO																		AS USER_TEL_NO
-			,CASE USER_SEX WHEN 'M' THEN '남' ELSE '여' END 						AS USER_SEX
+			,CASE USER_SEX WHEN 'M' THEN '남' ELSE '여' END 								AS USER_SEX
 			,SU.USER_TYPE																			AS USER_TYPE
-			,SCMI.IS_MEASURE																		AS IS_MEASURE
-			,DATE_FORMAT(SCMI.MEASURE_DUE_DT, '%Y-%m-%d') 				AS MEASURE_DUE_DT
-			,SCMI.INFORMATION_AGRYN														AS INFORMATION_AGRYN
-			,DATE_FORMAT(SCMI.INFORMATION_AGRYN_DT, '%Y-%m-%d')	AS INFORMATION_AGRYN_DT
-		FROM ST_CUSTOMER_MAPPING_INFO SCMI
+			,SCIAI.INFORMATION_AGRYN															AS INFORMATION_AGRYN
+			,DATE_FORMAT(SCIAI.INFORMATION_AGRYN_DT, '%Y-%m-%d')				AS INFORMATION_AGRYN_DT
+		FROM ST_CUSTOMER_INFOMATION_AGREE_INFO SCIAI
 		LEFT OUTER JOIN ST_USER SU
-		ON SCMI.USER_ID = SU.USER_ID
+		ON SCIAI.USER_ID = SU.USER_ID
 		WHERE 1=1
-		AND SCMI.DENTAL_HOSPITAL_CD = #{dentalHospitalCd}
-		AND DATE_FORMAT(SCMI.MEASURE_DUE_DT, '%Y-%m-%d') = DATE_FORMAT(SYSDATE(), '%Y-%m-%d')
-		AND SCMI.INFORMATION_AGRYN = 'Y'
+		AND SCIAI.DENTAL_HOSPITAL_CD = #{dentalHospitalCd}
+		AND SCIAI.INFORMATION_AGRYN = 'Y'
 		
 	</select>
 	
 	
+	
+	
+	<!-- 일반 등록 전환 전 일반 사용자 중 동일한 개인정보를 가지고 있는지 여부 확인 -->
+    <select id="duplicateChkUserInfo" parameterType="co.smartooth.app.vo.UserVO" resultType="hashmap">
+
+        SELECT 
+			COUNT(*)										AS COUNT
+			,USER_ID										AS USER_ID
+		FROM ST_USER
+		WHERE 1=1
+		AND USER_NAME = #{userName}
+		AND USER_BIRTHDAY = #{userBirthday}
+		AND USER_TEL_NO = #{userTelNo}
+		
+    </select>
+    
+    
+    
+    
+    
 </mapper>
