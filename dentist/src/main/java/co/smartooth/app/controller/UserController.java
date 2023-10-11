@@ -729,6 +729,7 @@ public class UserController {
 		//if (lang == null || lang.equals("")) {
 		//	lang = "ko";
 		//}
+		
 
 		// 회원 아이디 :: 기존의 T00~T99의 아이디를 받는다
 		String testUserId = (String) paramMap.get("testUserId");
@@ -826,20 +827,20 @@ public class UserController {
 			
 
 			// 일반 등록 전환 전에 일반 사용자 중 동일한 개인정보가 있을 경우 데이터를 합산할수 있도록 하는 메시지
-			HashMap<String, Object> duplicateChkUserInfo = userService.duplicateChkUserInfo(userVO);
-			
-			if(Integer.parseInt(duplicateChkUserInfo.get("COUNT").toString()) == 1) {
-				
-				// 치과에 소속되어 있는 모든 환자 목록(T00~T99도 포함)
-				measuredUserList= userService.selectMeasuredUserList(departmentCd, "ASC");
-				
-				hm.put("userId", duplicateChkUserInfo.get("USER_ID"));
-				hm.put("measuredUserList", measuredUserList);
-				hm.put("code", "402");
-				hm.put("msg", "해당 정보로 등록 되어있는 아이디가 있습니다.\nID : "+duplicateChkUserInfo.get("USER_ID"));
-				return hm;
-				
-			}
+//			HashMap<String, Object> duplicateChkUserInfo = userService.duplicateChkUserInfo(userVO);
+//			
+//			if(Integer.parseInt(duplicateChkUserInfo.get("COUNT").toString()) == 1) {
+//				
+//				// 치과에 소속되어 있는 모든 환자 목록(T00~T99도 포함)
+//				measuredUserList= userService.selectMeasuredUserList(departmentCd, "ASC");
+//				
+//				hm.put("userId", duplicateChkUserInfo.get("USER_ID"));
+//				hm.put("measuredUserList", measuredUserList);
+//				hm.put("code", "402");
+//				hm.put("msg", "해당 정보로 등록 되어있는 아이디가 있습니다.\nID : "+duplicateChkUserInfo.get("USER_ID"));
+//				return hm;
+//				
+//			}
 			
 			
 			/** 빠른 등록 회원 일반 등록으로 전환 **/
