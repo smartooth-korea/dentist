@@ -3,6 +3,8 @@ package co.smartooth.app.config;
 import java.util.Properties;
 import javax.sql.DataSource;
 import org.apache.ibatis.session.SqlSessionFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
 import org.mybatis.spring.SqlSessionFactoryBean;
 import org.mybatis.spring.SqlSessionTemplate;
 import org.mybatis.spring.annotation.MapperScan;
@@ -23,17 +25,21 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 @EnableTransactionManagement
 public class MybatisConfig {
 
+	@Autowired
+	ApplicationContext applicationContext;
+	
 	@Bean
 	public SqlSessionFactory sqlSessionFactory(DataSource dataSource) throws Exception {
 		SqlSessionFactoryBean sessionFactory = new SqlSessionFactoryBean();
 		sessionFactory.setDataSource(dataSource);
+		sessionFactory.setConfigLocation(applicationContext.getResource("classpath:mybatis-config.xml"));
 		sessionFactory.setMapperLocations(new PathMatchingResourcePatternResolver().getResources("classpath:mapper/*/*.xml"));
-
-		// myBatis properties setting
-		Properties mybatisProperties = new Properties();
+		
+		// myBatis properties setting 마이바티스 xml 설정
+		// Properties mybatisProperties = new Properties();
 		// CamelCase 자동맵핑
-		mybatisProperties.setProperty("mapUnderscoreToCamelCase", "true"); 
-		sessionFactory.setConfigurationProperties(mybatisProperties);
+		// mybatisProperties.setProperty("mapUnderscoreToCamelCase", "true"); 
+		// sessionFactory.setConfigurationProperties(mybatisProperties);
 
 		return sessionFactory.getObject();
 	}

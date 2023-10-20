@@ -9,7 +9,8 @@
           FROM ST_USER
 		 WHERE 1=1
 		     AND USER_ID = #{userId}
-		     AND USER_PWD = #{userPwd}
+<!-- 		     AND USER_PWD = #{userPwd} -->
+		     AND USER_PWD = TO_BASE64(HEX(AES_ENCRYPT(#{userPwd}, '${securityKey}')))
     </select>
 
 

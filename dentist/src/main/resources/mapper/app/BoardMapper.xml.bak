@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="co.smartooth.app.mapper.BoardMapper">
+
+
+
+
+
+	<!-- 공지사항 게시글 리스트 조회 -->
+	<select id="selectNoticeAndEventPostList" parameterType="String" resultType="hashmap">
+
+		SELECT 
+			SBN.BOARD_SEQ																						AS BOARD_SEQ
+			,SBN.USER_ID																							AS USER_ID
+			,SU.USER_NAME																						AS USER_NAME
+			,SBN.BOARD_TYPE																					AS BOARD_TYPE
+			,SBN.BOARD_TITLE																					AS BOARD_TITLE
+			,SBN.BOARD_CONTENT																				AS BOARD_CONTENT
+			,DATE_FORMAT(SBN.BOARD_RGST_DT, '%Y-%m-%d %H:%i')							AS BOARD_RGST_DT
+			,SBN.BOARD_IMG_URL																				AS BOARD_IMG_URL
+			,SBN.BOARD_PREVIEW_IMG_URL																	AS BOARD_PREVIEW_IMG_URL
+			,DATE_FORMAT(SBN.BOARD_EVENT_START_DT, '%Y-%m-%d %H:%i')					AS BOARD_EVENT_START_DT
+			,DATE_FORMAT(SBN.BOARD_EVENT_END_DT, '%Y-%m-%d %H:%i')					AS BOARD_EVENT_END_DT
+		FROM ST_BOARD_NOTICE SBN
+		LEFT OUTER JOIN ST_USER SU
+		ON SBN.USER_ID = SU.USER_ID
+		WHERE 1=1
+		<if test="searchType == 'userName'">
+		AND SU.USER_NAME LIKE CONCAT('%',#{searchData},'%')
+   		</if>
+		<if test="searchType == 'boardTitle'">
+		AND SBN.BOARD_TITLE LIKE CONCAT('%',#{searchData},'%')
+   		</if>
+		<if test="startDt != '' and endDt !='' and startDt != null and endDt != null">
+		AND DATE_FORMAT(SBN.BOARD_RGST_DT, '%Y-%m-%d') BETWEEN #{startDt} AND #{endDt}
+   		</if>
+		ORDER BY SBN.BOARD_RGST_DT DESC
+
+	</select>
+	
+	
+	
+	
+	
+</mapper>

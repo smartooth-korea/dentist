@@ -10,23 +10,23 @@
 	<select id="selectNoticeAndEventPostList" parameterType="String" resultType="hashmap">
 
 		SELECT 
-			SBN.BOARD_SEQ																						AS BOARD_SEQ
-			,SBN.USER_ID																							AS USER_ID
-			,SU.USER_NAME																						AS USER_NAME
-			,SBN.BOARD_TYPE																					AS BOARD_TYPE
-			,SBN.BOARD_TITLE																					AS BOARD_TITLE
-			,SBN.BOARD_CONTENT																				AS BOARD_CONTENT
-			,DATE_FORMAT(SBN.BOARD_RGST_DT, '%Y-%m-%d %H:%i')							AS BOARD_RGST_DT
-			,SBN.BOARD_IMG_URL																				AS BOARD_IMG_URL
-			,SBN.BOARD_PREVIEW_IMG_URL																	AS BOARD_PREVIEW_IMG_URL
-			,DATE_FORMAT(SBN.BOARD_EVENT_START_DT, '%Y-%m-%d %H:%i')					AS BOARD_EVENT_START_DT
-			,DATE_FORMAT(SBN.BOARD_EVENT_END_DT, '%Y-%m-%d %H:%i')					AS BOARD_EVENT_END_DT
+			SBN.BOARD_SEQ																											AS BOARD_SEQ
+			,SBN.USER_ID																												AS USER_ID
+			,CAST(AES_DECRYPT(UNHEX(FROM_BASE64(SU.USER_NAME)), '${securityKey}' ) AS CHAR)		AS USER_NAME
+			,SBN.BOARD_TYPE																										AS BOARD_TYPE
+			,SBN.BOARD_TITLE																										AS BOARD_TITLE
+			,SBN.BOARD_CONTENT																									AS BOARD_CONTENT
+			,DATE_FORMAT(SBN.BOARD_RGST_DT, '%Y-%m-%d %H:%i')												AS BOARD_RGST_DT
+			,SBN.BOARD_IMG_URL																									AS BOARD_IMG_URL
+			,SBN.BOARD_PREVIEW_IMG_URL																						AS BOARD_PREVIEW_IMG_URL
+			,DATE_FORMAT(SBN.BOARD_EVENT_START_DT, '%Y-%m-%d %H:%i')										AS BOARD_EVENT_START_DT
+			,DATE_FORMAT(SBN.BOARD_EVENT_END_DT, '%Y-%m-%d %H:%i')										AS BOARD_EVENT_END_DT
 		FROM ST_BOARD_NOTICE SBN
 		LEFT OUTER JOIN ST_USER SU
 		ON SBN.USER_ID = SU.USER_ID
 		WHERE 1=1
 		<if test="searchType == 'userName'">
-		AND SU.USER_NAME LIKE CONCAT('%',#{searchData},'%')
+		AND SU.USER_NAME LIKE CONCAT('%',TO_BASE64(HEX(AES_ENCRYPT(#{seachData}, '${securityKey}'))),'%')
    		</if>
 		<if test="searchType == 'boardTitle'">
 		AND SBN.BOARD_TITLE LIKE CONCAT('%',#{searchData},'%')

@@ -1,7 +1,9 @@
 package co.smartooth.app.controller;
 
+import java.io.UnsupportedEncodingException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -18,6 +20,7 @@ import co.smartooth.app.service.LogService;
 import co.smartooth.app.service.OrganService;
 import co.smartooth.app.service.UserService;
 import co.smartooth.app.utils.AES256Util;
+import co.smartooth.app.utils.CryptUtil;
 import co.smartooth.app.utils.JwtTokenUtil;
 import co.smartooth.app.vo.AuthVO;
 import co.smartooth.app.vo.UserVO;
@@ -64,7 +67,8 @@ public class LoginController {
 	    logger.debug("========== dentist.LoginController ========== /dentist/login.do ==========");
 	    logger.debug("========== dentist.LoginController ========== /dentist/login.do ==========");
 	    logger.debug("========== dentist.LoginController ========== /dentist/login.do ==========");
-
+	    
+	    CryptUtil cryptUtil = new CryptUtil();
 	    
 	    // String lang = (String)paramMap.get("lang");
 	    // 하드코딩
@@ -109,10 +113,10 @@ public class LoginController {
 		
 		userId= (String)paramMap.get("userId");
 		loginIp = (String)paramMap.get("loginIp"); 
+		userPwd = (String)paramMap.get("userPwd");
 		
-		// 비밀번호 암호화 
-		AES256Util aes256Util = new AES256Util();
-		userPwd = aes256Util.aesEncode((String)paramMap.get("userPwd"));
+		//AES256Util aes256Util = new AES256Util();
+		//userPwd = aes256Util.aesEncode(userPwd);
 		
 		if(userPwd.equals("false")) { // 암호화에 실패할 경우
 			hm.put("code", "500");

@@ -207,12 +207,6 @@ public class UserController {
 			// 아이디 생성 시 치과 코드 + 입력 
 			userId = dentalHospitalCd+"-"+userId;
 			
-			// 비밀번호 암호화
-			AES256Util aes256Util = new AES256Util();
-			userPwd = aes256Util.aesEncode(userPwd);
-			// 이름 암호화
-			//userName = aes256Util.aesEncode(userName);
-			
 			/** 회원 공통 정보**/
 			// 회원 정보 VO
 			userVO.setUserId(userId);
@@ -795,7 +789,7 @@ public class UserController {
 			userVO.setUserId(userId);
 			// userVO.setUserNo(userNo);
 			// 초기 비밀번호 0000
-			userVO.setUserPwd("ZrVBBrdMK1txRmfDR8ZOZA==");
+			userVO.setUserPwd("0000");
 			userVO.setUserName(userName);
 			userVO.setUserType(userType);
 			userVO.setSchoolType(userType);
@@ -1156,10 +1150,6 @@ public class UserController {
 			hm.put("msg", "파라미터(아이디)가 전달되지 않았습니다.");
 			return hm;
 		}
-		
-		// 비밀번호 암호화
-		AES256Util aes256Util = new AES256Util();
-		userPwd = aes256Util.aesEncode(userPwd);
 		
 		// 회원 정보 VO
 		userVO.setUserId(userId);

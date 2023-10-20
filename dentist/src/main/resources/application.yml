@@ -6,14 +6,9 @@ spring:
     #datasource (mariaDB)
     datasource:
         driver-class-name: net.sf.log4jdbc.sql.jdbcapi.DriverSpy
-        #개발서버
-        #db-url: jdbc:log4jdbc:mariadb://smartooth-premium-dev.cdx8q9adtw2b.ap-northeast-2.rds.amazonaws.com/smartooth_dentist_local
-        #db-url: jdbc:log4jdbc:mariadb://smartooth-premium-dev.cdx8q9adtw2b.ap-northeast-2.rds.amazonaws.com/smartooth_dentist
-        #운영서버 DEV Database - smartooth_premium
-        db-url: jdbc:log4jdbc:mariadb://smartooth-premium-dev.cdx8q9adtw2b.ap-northeast-2.rds.amazonaws.com/smartooth_premium
-        ##db-url: jdbc:log4jdbc:mariadb://smartooth-dev-database.cdx8q9adtw2b.ap-northeast-2.rds.amazonaws.com:3306/smartooth_premium
-        #테스트서버 - 미국
-        #db-url: jdbc:log4jdbc:mariadb://smartooth-us-database.cs4boanjdk1j.us-west-1.rds.amazonaws.com:3306/smartooth_premium
+        #운영
+        #db-url: jdbc:log4jdbc:mariadb://smartooth-premium-dev.cdx8q9adtw2b.ap-northeast-2.rds.amazonaws.com/smartooth_premium
+        db-url: jdbc:log4jdbc:mariadb://smartooth-premium-dev.cdx8q9adtw2b.ap-northeast-2.rds.amazonaws.com/smartooth_premium_encode
         db-username: smartooth
         db-password: smartooth509#
         

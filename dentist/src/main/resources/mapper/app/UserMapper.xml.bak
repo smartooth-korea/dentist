@@ -13,7 +13,6 @@
 
 
 
-
 	<!-- 회원 등록 (회원가입) -->
     <insert id="insertUserInfo" parameterType="co.smartooth.app.vo.UserVO">
     	INSERT INTO ST_USER
@@ -42,15 +41,15 @@
     	(
     		#{userNo}
     		,#{userId}
-    		,TO_BASE64(HEX(AES_ENCRYPT(#{userPwd}, '${securityKey}')))
-    		,TO_BASE64(HEX(AES_ENCRYPT(#{userName}, '${securityKey}')))
-    		,TO_BASE64(HEX(AES_ENCRYPT(#{userEmail}, '${securityKey}')))
+    		,#{userPwd}
+    		,#{userName}
+    		,#{userEmail}
     		,#{userType}
-    		,TO_BASE64(HEX(AES_ENCRYPT(#{userBirthday}, '${securityKey}')))
+    		,#{userBirthday}
     		,#{userCountry}
     		,#{userState}
     		,#{userAddress}
-    		,TO_BASE64(HEX(AES_ENCRYPT(#{userTelNo}, '${securityKey}')))
+    		,#{userTelNo}
     		,#{userSex}
     		<choose>
 				<when test="userRgstDt != null and userRgstDt != '' ">
@@ -75,16 +74,16 @@
 	<select id="selectNoMeasureValueUserId" parameterType="String" resultType="co.smartooth.app.vo.UserVO">
 	
 		SELECT 
-				SU.USER_ID																														AS USER_ID
-				,CAST(AES_DECRYPT(UNHEX(FROM_BASE64(SU.USER_NAME)), '${securityKey}' ) AS CHAR)			AS USER_NAME
-				,SU.USER_TYPE																												AS USER_TYPE
-				,SU.USER_PWD																												AS USER_PWD
-				,CAST(AES_DECRYPT(UNHEX(FROM_BASE64(SU.USER_EMAIL)), '${securityKey}' ) AS CHAR)			AS USER_EMAIL
-				,CAST(AES_DECRYPT(UNHEX(FROM_BASE64(SU.USER_BIRTHDAY)),	'${securityKey}' ) AS CHAR)	AS USER_BIRTHDAY
-				,SU.USER_COUNTRY																											AS USER_COUNTRY
-				,SU.USER_STATE																												AS USER_STATE
-				,CAST(AES_DECRYPT(UNHEX(FROM_BASE64(SU.USER_TEL_NO)), '${securityKey}') AS CHAR)			AS USER_TEL_NO
-				,SU.USER_RGST_DT																											AS USER_RGST_DT
+				SU.USER_ID							AS USER_ID
+				,SU.USER_NAME						AS USER_NAME
+				,SU.USER_TYPE						AS USER_TYPE
+				,SU.USER_PWD						AS USER_PWD
+				,SU.USER_EMAIL						AS USER_EMAIL
+				,SU.USER_BIRTHDAY					AS USER_BIRTHDAY
+				,SU.USER_COUNTRY					AS USER_COUNTRY
+				,SU.USER_STATE						AS USER_STATE
+				,SU.USER_TEL_NO						AS USER_TEL_NO
+				,SU.USER_RGST_DT					AS USER_RGST_DT
 		FROM 
 			(
 				SELECT * FROM ST_USER 
@@ -95,8 +94,7 @@
 		ON SU.USER_ID = STM.USER_ID
 		WHERE 1=1 
 		AND STM.USER_ID IS NULL
-		AND CAST(AES_DECRYPT(UNHEX(FROM_BASE64(SU.USER_NAME)), '${securityKey}') AS CHAR) LIKE CONCAT('%','환자','%')
-<!-- 		AND SU.USER_NAME LIKE CONCAT('%', '환자', '%') -->
+		AND SU.USER_NAME LIKE CONCAT('%', '환자', '%')
 		LIMIT 1
 	
 	
@@ -128,7 +126,28 @@
        	AND USER_ID = #{userId} 
 	
 	</update>
-
+	
+	
+	
+	<!-- T00~T99의 측정 상태 리스트 반환 -->
+	<select id="selectUserMeasureStatusList">
+	
+		SELECT 
+			USER_NO
+			,USER_ID,
+			,SCHOOL_TYPE,
+			,IS_MEASURING,
+			,TEACHER_ID,
+			,PA_USER_NAME,
+			,PA_USER_TEL_NO,
+			,AGRE_YN,
+			,TEETH_TYPE
+		FROM   SMARTOOTH_DENTIST.ST_STUDENT_USER_DETAIL; 
+	
+	
+	</select>
+	
+	
 	
 	
 	
@@ -139,13 +158,13 @@
 		UPDATE ST_USER
 		<trim prefix="SET" suffixOverrides=",">
 			<if test="userName != null and userName != '' ">
-				USER_NAME = TO_BASE64(HEX(AES_ENCRYPT(#{userName}, '${securityKey}'))),
+				USER_NAME = #{userName},
 	   		</if>	
 			<if test="userTelNo != null and userTelNo != '' ">
-				 USER_TEL_NO = TO_BASE64(HEX(AES_ENCRYPT(#{userTelNo}, '${securityKey}'))),
+				 USER_TEL_NO = #{userTelNo},
 	   		</if>	
 			<if test="userBirthday != null and userBirthday != '' ">
-				USER_BIRTHDAY = TO_BASE64(HEX(AES_ENCRYPT(#{userBirthday}, '${securityKey}'))),
+				USER_BIRTHDAY = #{userBirthday},
 	   		</if>	
 				 USER_SEX = #{userSex}
    		</trim>
@@ -222,14 +241,14 @@
     
          SELECT USER_NO
          			,USER_ID
-				    ,CAST(AES_DECRYPT(UNHEX(FROM_BASE64(USER_NAME)),	'${securityKey}' ) AS CHAR)			AS USER_NAME
+				    ,USER_NAME
 				    ,USER_EMAIL
 				    ,USER_TYPE
-				    ,CAST(AES_DECRYPT(UNHEX(FROM_BASE64(USER_BIRTHDAY)), '${securityKey}' ) AS CHAR)		AS USER_BIRTHDAY
+				    ,USER_BIRTHDAY
 					,USER_COUNTRY
 				    ,USER_STATE
 				    ,USER_ADDRESS
-				    ,CAST(AES_DECRYPT(UNHEX(FROM_BASE64(USER_TEL_NO)), '${securityKey}') AS CHAR)			AS USER_TEL_NO
+				    ,USER_TEL_NO
 				    ,USER_SEX
 				    ,DATE_FORMAT(USER_RGST_DT, '%Y-%m-%d') AS USER_RGST_DT
 				    ,PUSH_TOKEN 
@@ -252,7 +271,7 @@
     
 		UPDATE ST_USER
 		SET  
-			USER_PWD = TO_BASE64(HEX(AES_ENCRYPT(#{userPwd}, '${securityKey}')))
+			USER_PWD = #{userPwd}
 		WHERE 1=1
 		AND USER_ID = #{userId}
 		
@@ -303,12 +322,12 @@
 	<!-- 부서(반) 회원 리스트 조회 --> 
     <select id="selectDepartmentList" resultType="co.smartooth.app.vo.UserVO" parameterType="String">
     
-			SELECT SU.USER_NO																												AS USER_NO
-					   ,SU.USER_ID																												AS USER_ID
-					   ,CAST(AES_DECRYPT(UNHEX(FROM_BASE64(SU.USER_NAME)), '${securityKey}' ) AS CHAR)	AS USER_NAME
-					   ,STUD.SCHOOL_CODE																									AS SCHOOL_CODE
-					   ,STUD.CLASS_CODE																									AS CLASS_CODE
-					   ,SCI.CLASS_NAME																										AS CLASS_NAME
+			SELECT SU.USER_NO										AS USER_NO
+					   ,SU.USER_ID										AS USER_ID
+					   ,SU.USER_NAME								AS USER_NAME
+					   ,STUD.SCHOOL_CODE							AS SCHOOL_CODE
+					   ,STUD.CLASS_CODE							AS CLASS_CODE
+					   ,SCI.CLASS_NAME								AS CLASS_NAME
 			FROM ST_USER SU
 			LEFT OUTER JOIN ST_TEACHER_USER_DETAIL STUD
 			ON SU.USER_ID = STUD.USER_ID
@@ -331,18 +350,18 @@
 	<!-- 부서(반) ID로 해당 피측정자 목록 조회 --> 
     <select id="selectMeasuredUserList" parameterType="String" resultType="co.smartooth.app.vo.UserVO">
     
-		SELECT SSUD.USER_ID																													AS USER_ID
-					,CAST(AES_DECRYPT(UNHEX(FROM_BASE64(SU.USER_NAME)),	'${securityKey}' ) AS CHAR)			AS USER_NAME
-					,CAST(AES_DECRYPT(UNHEX(FROM_BASE64(SU.USER_BIRTHDAY)), '${securityKey}' ) AS CHAR)		AS USER_BIRTHDAY
-					,CAST(AES_DECRYPT(UNHEX(FROM_BASE64(SU.USER_TEL_NO)), '${securityKey}') AS CHAR)			AS USER_TEL_NO
-					,SU.USER_SEX																													AS USER_SEX
-					,DATE_FORMAT(SU.USER_RGST_DT, '%Y-%m-%d')																	AS USER_RGST_DT
-					,SSUD.SCHOOL_TYPE																										AS SCHOOL_TYPE
-					,SSUD.IS_MEASURING																										AS IS_MEASURING
-					,SSUD.PA_USER_NAME																										AS PA_USER_NAME
-					,SSUD.PA_USER_TEL_NO																									AS PA_USER_TEL_NO
-		         	,SU.TEETH_TYPE																												AS TEETH_TYPE
-		         	,SU.PUSH_TOKEN																												AS PUSH_TOKEN
+		SELECT SSUD.USER_ID																AS USER_ID
+					,SU.USER_NAME															AS USER_NAME
+					,DATE_FORMAT(SU.USER_BIRTHDAY, '%Y-%m-%d')				AS USER_BIRTHDAY
+					,SU.USER_TEL_NO														AS USER_TEL_NO
+					,SU.USER_SEX																AS USER_SEX
+					,DATE_FORMAT(SU.USER_RGST_DT, '%Y-%m-%d')				AS USER_RGST_DT
+					,SSUD.SCHOOL_TYPE													AS SCHOOL_TYPE
+					,SSUD.IS_MEASURING													AS IS_MEASURING
+					,SSUD.PA_USER_NAME													AS PA_USER_NAME
+					,SSUD.PA_USER_TEL_NO												AS PA_USER_TEL_NO
+		         	,SU.TEETH_TYPE															AS TEETH_TYPE
+		         	,SU.PUSH_TOKEN															AS PUSH_TOKEN
 		FROM ST_STUDENT_USER_DETAIL SSUD
 		LEFT OUTER JOIN ST_USER SU
 		ON SSUD.USER_ID = SU.USER_ID
@@ -401,26 +420,23 @@
 	
 	
 	
-	
-	
 	<!-- 부서(반) ID로 피측정자 목록 조회 --> 
     <select id="selectTestUserListByTc" parameterType="String" resultType="co.smartooth.app.vo.UserVO">
     
-		SELECT SSUD.USER_ID																											AS USER_ID
-				   ,CAST(AES_DECRYPT(UNHEX(FROM_BASE64(SU.USER_NAME)), '${securityKey}' ) AS CHAR)	AS USER_NAME
-		       	   ,SSUD.SCHOOL_TYPE																									AS SCHOOL_TYPE
-		           ,SSUD.IS_MEASURING																								AS IS_MEASURING
-		           ,SSUD.CAVITY_NORMAL																								AS CAVITY_NORMAL
-		           ,SSUD.CAVITY_CAUTION																								AS CAVITY_CAUTION
-		           ,SSUD.CAVITY_WARNING																							AS CAVITY_WARNING
-		           ,SSUD.CAVITY_DANGER																								AS CAVITY_DANGER 
+		SELECT SSUD.USER_ID								AS USER_ID
+				   ,SU.USER_NAME								AS USER_NAME
+		       	   ,SSUD.SCHOOL_TYPE						AS SCHOOL_TYPE
+		           ,SSUD.IS_MEASURING					AS IS_MEASURING
+		           ,SSUD.CAVITY_NORMAL					AS CAVITY_NORMAL
+		           ,SSUD.CAVITY_CAUTION					AS CAVITY_CAUTION
+		           ,SSUD.CAVITY_WARNING				AS CAVITY_WARNING
+		           ,SSUD.CAVITY_DANGER					AS CAVITY_DANGER 
 		FROM ST_STUDENT_USER_DETAIL SSUD
 		LEFT OUTER JOIN ST_USER SU
 		ON SSUD.USER_ID = SU.USER_ID
 		WHERE 1=1
 		AND SSUD.TEACHER_ID = #{userId}
-<!-- 		AND USER_NAME LIKE CONCAT('%', #{userName}, '%') -->
-		AND USER_NAME LIKE CONCAT('%', CAST(AES_DECRYPT(UNHEX(FROM_BASE64(#{userName})), '${securityKey}' ) AS CHAR), '%')
+		AND USER_NAME LIKE CONCAT('%', #{userName}, '%')
 		GROUP BY SU.USER_ID
 		ORDER BY SSUD.USER_ID ASC
 		
@@ -428,19 +444,16 @@
 	
 	
 	
-	
-	
 	<!-- 피측정자 이름 변경 -->
     <update id="updateTestUserName" parameterType="String">
     
 		UPDATE ST_USER
-		SET  USER_NAME = TO_BASE64(HEX(AES_ENCRYPT(#{userName}, '${securityKey}')))
+		SET  
+			   USER_NAME = #{userName}
 		WHERE 1=1
 		AND USER_ID = #{userId}
 		
     </update>
-	
-	
 	
 	
 	
@@ -449,7 +462,7 @@
 	
         SELECT USER_NO
                   ,USER_ID
-                  ,CAST(AES_DECRYPT(UNHEX(FROM_BASE64(USER_NAME)), '${securityKey}' ) AS CHAR)	AS USER_NAME
+                  ,USER_NAME
                   ,IS_MEASURING
 		FROM ST_ST_USER
 		WHERE 1=1 
@@ -457,8 +470,16 @@
 		AND USER_DELETE_YN = 'N'	
             
     </select >
-
-
+	
+	
+	
+	<!-- 피측정자 측정 상태 업데이트 -->
+    <update id="updateUserIsMeasuring" parameterType="co.smartooth.app.vo.UserVO">
+		UPDATE ST_ST_USER
+		SET IS_MEASURING  =  #{isMeasuring}
+		WHERE USER_ID = #{userId}
+    </update>
+	
 	
 	
 	
@@ -481,9 +502,11 @@
 		<if test="userId != null and userId != '' ">
 			AND USER_ID = #{userId}
    		</if>
+<!--    		<if test="userNo != null and userNo != '' "> -->
+<!-- 			AND USER_NO = #{userNo} -->
+<!--    		</if>  -->
    		
     </select>
-
 
 
 
@@ -501,7 +524,6 @@
 		AND STUD.SCHOOL_CODE = #{schoolCode}
 		
     </select>
-    
     
   
     
@@ -555,9 +577,11 @@
 		WHERE 1=1
 		AND DENTIST_ID = #{dentistId} 
 		AND DENTAL_HOSPITAL_CD = #{dentalHospitalCd}
+	
+            	
+            	
    		
     </insert>
-    
     
     
     
@@ -581,7 +605,6 @@
 	
 	
 	
-	
 	<!-- 최근 등록한 의사 아이디 조회-->
     <select id="selectDentistId" parameterType="String" resultType="String">
 
@@ -598,18 +621,17 @@
 	
 	
 	
-	
 	<select id="selectInfomationAgreeUserList" parameterType="String" resultType="hashmap">
 	
 		SELECT
-			SU.USER_ID																														AS USER_ID
-			,CAST(AES_DECRYPT(UNHEX(FROM_BASE64(SU.USER_NAME)),	'${securityKey}' ) AS CHAR)			AS USER_NAME
-			,CAST(AES_DECRYPT(UNHEX(FROM_BASE64(SU.USER_BIRTHDAY)), '${securityKey}') AS CHAR)		AS USER_BIRTHDAY
-			,CAST(AES_DECRYPT(UNHEX(FROM_BASE64(SU.USER_TEL_NO)), '${securityKey}') AS CHAR)			AS USER_TEL_NO
-			,CASE USER_SEX WHEN 'M' THEN '남' ELSE '여' END 																	AS USER_SEX
-			,SU.USER_TYPE																												AS USER_TYPE
-			,SCIAI.INFORMATION_AGRYN																								AS INFORMATION_AGRYN
-			,DATE_FORMAT(SCIAI.INFORMATION_AGRYN_DT, '%Y-%m-%d')													AS INFORMATION_AGRYN_DT
+			SU.USER_ID																					AS USER_ID
+			,SU.USER_NAME																			AS USER_NAME
+			,SU.USER_BIRTHDAY																		AS USER_BIRTHDAY
+			,SU.USER_TEL_NO																		AS USER_TEL_NO
+			,CASE USER_SEX WHEN 'M' THEN '남' ELSE '여' END 								AS USER_SEX
+			,SU.USER_TYPE																			AS USER_TYPE
+			,SCIAI.INFORMATION_AGRYN															AS INFORMATION_AGRYN
+			,DATE_FORMAT(SCIAI.INFORMATION_AGRYN_DT, '%Y-%m-%d')				AS INFORMATION_AGRYN_DT
 		FROM ST_CUSTOMER_INFOMATION_AGREE_INFO SCIAI
 		LEFT OUTER JOIN ST_USER SU
 		ON SCIAI.USER_ID = SU.USER_ID
@@ -622,7 +644,6 @@
 	
 	
 	
-	
 	<!-- 일반 등록 전환 전 일반 사용자 중 동일한 개인정보를 가지고 있는지 여부 확인 -->
     <select id="duplicateChkUserInfo" parameterType="co.smartooth.app.vo.UserVO" resultType="hashmap">
 
@@ -631,12 +652,9 @@
 			,USER_ID										AS USER_ID
 		FROM ST_USER
 		WHERE 1=1
-		AND USER_NAME = TO_BASE64(HEX(AES_ENCRYPT(#{userName}, '${securityKey}')))
-		AND USER_BIRTHDAY = TO_BASE64(HEX(AES_ENCRYPT(#{userBirthday}, '${securityKey}')))
-		AND USER_TEL_NO = TO_BASE64(HEX(AES_ENCRYPT(#{userTelNo}, '${securityKey}')))
-<!-- 		AND USER_NAME = #{userName} -->
-<!-- 		AND USER_BIRTHDAY = #{userBirthday} -->
-<!-- 		AND USER_TEL_NO = #{userTelNo} -->
+		AND USER_NAME = #{userName}
+		AND USER_BIRTHDAY = #{userBirthday}
+		AND USER_TEL_NO = #{userTelNo}
 		
     </select>
     
