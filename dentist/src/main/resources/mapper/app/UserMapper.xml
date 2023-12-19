@@ -599,6 +599,7 @@
 	
 	
 	
+	<!-- 개인정보 제공을 동의한 환자 목록(SYSDATE) -->
 	<select id="selectInfomationAgreeUserList" parameterType="String" resultType="hashmap">
 	
 		SELECT

@@ -143,8 +143,11 @@ public class TeethController {
 
 			// 회원 아이디
 			String userId = (String) paramMap.get("userId");
-			// 측정 치아 번호0
+			// 측정 치아 번호
 			String toothNo = (String) paramMap.get("toothNo");
+			if(toothNo.equals("t010")) {
+				toothNo = "t10";
+			}
 			// 치아 측정 값
 			String toothValue = (String) paramMap.get("toothValue");
 			// 측정일 : SYSDATE(yyyy-mm-dd)
@@ -276,12 +279,28 @@ public class TeethController {
 						toothMeasureVO.setToothNo(toothNo);
 
 						if (isExistSysdateRow == 0) {
+							/*
+							 * // 치아 값을 선택했을 경우 기존의 데이터에 추가적인 데이터를 합산하여 새로 데이터 생성 List<TeethMeasureVO>
+							 * userOldTeethMeasureValue =
+							 * teethService.selectUserTeethMeasureValue(teethMeasureVO);
+							 * teethService.insertUserTeethMeasureValue(userOldTeethMeasureValue.get(0));
+							 * teethService.updateUserToothMeasureValue(toothMeasureVO); // 기존의 데이터를 반환
+							 * userTeethValues = teethService.selectUserTeethMeasureValue(teethMeasureVO);
+							 */
+
 							// 치아 값을 선택했을 경우 기존의 데이터에 추가적인 데이터를 합산하여 새로 데이터 생성
 							List<TeethMeasureVO> userOldTeethMeasureValue = teethService.selectUserTeethMeasureValue(teethMeasureVO);
-							teethService.insertUserTeethMeasureValue(userOldTeethMeasureValue.get(0));
+							if(userOldTeethMeasureValue.size() > 0) {
+								teethService.insertUserTeethMeasureValue(userOldTeethMeasureValue.get(0));
+							}else {
+								setTeethInit(teethMeasureVO);
+								teethService.insertUserTeethMeasureValue(teethMeasureVO);
+							}
 							teethService.updateUserToothMeasureValue(toothMeasureVO);
+							
 							// 기존의 데이터를 반환
 							userTeethValues = teethService.selectUserTeethMeasureValue(teethMeasureVO);
+							
 						} else {
 							teethService.updateUserToothMeasureValue(toothMeasureVO);
 							userTeethValues = teethService.selectUserTeethMeasureValue(teethMeasureVO);

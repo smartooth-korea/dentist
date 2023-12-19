@@ -95,7 +95,7 @@ public class LoginController {
 		int isIdExist = 0;
 		
 		HashMap<String,Object> hm = new HashMap<String,Object>();
-		List<HashMap<String, Object>> measureOranList = new ArrayList<HashMap<String, Object>>();
+		List<HashMap<String, Object>> measureOrganList = new ArrayList<HashMap<String, Object>>();
 		List<HashMap<String, Object>> departmentList = new  ArrayList<HashMap<String, Object>>();
 		List<UserVO> measuredUserList = new ArrayList<UserVO>();
 		List<HashMap<String, Object>> dentistList = new ArrayList<HashMap<String, Object>>();
@@ -177,13 +177,13 @@ public class LoginController {
 				userEmail = userVO.getUserEmail();
 				
 				// 로그인 시 등록 되어 있는 측정 예정 혹은 측정 완료 기관 목록 조회 (SYSDATE 기준)
-				measureOranList = organService.selectMeasureOrganList(userId, userType);
+				measureOrganList = organService.selectMeasureOrganList(userId, userType);
 				
 				
 				// 치과 이름
-				dentalHospitalNm = (String)measureOranList.get(0).get("SCHOOL_NAME");
+				dentalHospitalNm = (String)measureOrganList.get(0).get("SCHOOL_NAME");
 				// 치과 코드
-				dentalHospitalCd = (String) measureOranList.get(0).get("SCHOOL_CODE");
+				dentalHospitalCd = (String) measureOrganList.get(0).get("SCHOOL_CODE");
 				
 				// 치과 부서 목록 조회 (1개밖에없음)
 				departmentList = organService.selectDepartmentList(dentalHospitalCd);		

@@ -9,6 +9,12 @@ spring:
         #운영
         #db-url: jdbc:log4jdbc:mariadb://smartooth-premium-dev.cdx8q9adtw2b.ap-northeast-2.rds.amazonaws.com/smartooth_premium
         db-url: jdbc:log4jdbc:mariadb://smartooth-premium-dev.cdx8q9adtw2b.ap-northeast-2.rds.amazonaws.com/smartooth_premium_encode
+        #미국 서부 - 캘리포니아
+        #db-url: jdbc:log4jdbc:mariadb://smartooth-us-database.cs4boanjdk1j.us-west-1.rds.amazonaws.com/smartooth_premium
+        #미국 동부 - 버지니아북부
+        #db-url: jdbc:log4jdbc:mariadb://smartooth-premium-us-east.cdqhfsnvs0xm.us-east-1.rds.amazonaws.com/smartooth_premium
+        #유럽 - 아일랜드
+        #db-url: jdbc:log4jdbc:mariadb://smartooth-premium-ie.cpqhad4xtxwv.eu-west-1.rds.amazonaws.com/smartooth_premium
         db-username: smartooth
         db-password: smartooth509#
         

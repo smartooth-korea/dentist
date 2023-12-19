@@ -1,16 +1,21 @@
-#PROD SERVER (KR)
-#스마투스 프리미엄 치과
+#스마투프 프리미엄 운영 서버
+#지역 : EU-Ireland (유럽 - 아일랜드)
 spring:
     profiles:
-        active: dentist
+        active: eu-ir-dentist
     #datasource (mariaDB)
     datasource:
         driver-class-name: net.sf.log4jdbc.sql.jdbcapi.DriverSpy
-        db-url: jdbc:log4jdbc:mariadb://smartooth-premium-dev.cdx8q9adtw2b.ap-northeast-2.rds.amazonaws.com/smartooth_premium_encode
+        #미국 - 데이터베이스(캘리포니아)
+        #db-url: jdbc:log4jdbc:mariadb://smartooth-us-database.cs4boanjdk1j.us-west-1.rds.amazonaws.com/smartooth_premium
+        #유럽 - 데이터베이스(아일랜드)
+        db-url: jdbc:log4jdbc:mariadb://smartooth-premium-ie.cpqhad4xtxwv.eu-west-1.rds.amazonaws.com/smartooth_premium
         db-username: smartooth
         db-password: smartooth509#
 
-    loginUrl: 13.209.156.47:8090
+    #아일랜드
+    loginUrl: 18.203.37.155:8090
+    #loginUrl: 54.176.146.132:8090
         
     mvc:
         view:
@@ -39,8 +44,10 @@ spring:
             static-locations : classpath:/static-location/
 
 server:
-    #운영 Prod (AWS) - KR
-    ip: 13.209.156.47
+    #운영 Prod (AWS) - USA
+    #ip: 54.176.146.132
+    #아일랜드
+    ip: 18.203.37.155
     port: 8090
 
             
